@@ -1,0 +1,215 @@
+{
+	"info": {
+		"_postman_id": "ed9e5567-9f1e-4dee-adff-9c20e6a88822",
+		"name": "Predict2Win Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Admin Test\",\r\n    \"email\":\"test_admin1@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/register",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"abhinav.kmit@gmail.com\",\r\n    \"password\": \"Kmit123$\"\r\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/login",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Protected Route",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZTcwZWYxMjYyNjM5NGVmY2YzMDZkOCIsImlhdCI6MTYyNTc2MTQ2MiwiZXhwIjoxNjI1NzYyMDYyfQ.G3CRrg3PbyRn1Vb4jMGHvPYBHO9AUNnAbUhZEAORckM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/private",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"private"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"email\": \"test@gmail.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/forgotpassword",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forgotpassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"0123456789\"\r\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/passwordreset/8f8757052f69b8bc48026cdbe9a5cccc94c3e216",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"passwordreset",
+								"8f8757052f69b8bc48026cdbe9a5cccc94c3e216"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Add League Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZTlkYWJhNTAxODA1NWE4ODAxZWUwMCIsInVzZXJUeXBlIjoiQURNSU4iLCJ1c2VyU3RhdHVzIjoiQ1JFQVRFRCIsInVzZXJuYW1lIjoiQWRtaW4gVGVzdCIsImVtYWlsIjoidGVzdF9hZG1pbjFAZ21haWwuY29tIiwiaWF0IjoxNjI1OTM4NjE4LCJleHAiOjE2MjYwMjUwMTh9.1JVAC6zN9AMOgli2EvPybxiCUkcKlVwqxLflFarvRow",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"League Admin2\",\r\n    \"email\":\"test_leagueAdmin2@gmail.com\",\r\n    \"password\": \"12345678\",\r\n    \"firstName\": \"League\",\r\n    \"lastName\": \"Admin\"\r\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/admin/addLeagueAdmin",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"addLeagueAdmin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
