@@ -15,7 +15,6 @@ export default {
 
     async performRequest({url, options, payload}) {
         console.log("Begining request to", url);
-
         let currentToken = "";
 
 
@@ -28,8 +27,12 @@ export default {
         }
 
         const headers = {
-            "Content-Type": "application/json",
+            Accept: "application/json",
             Authorization: `Bearer ${currentToken}`,
+        }
+
+        if(!(payload instanceof FormData)){
+            headers["Content-Type"] = "application/json"
         }
 
         const fullURL = url.startsWith("/") ? url : `/${url}`;
