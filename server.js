@@ -4,24 +4,40 @@ const express = require("express");
 const connectDB = require("./config/db");
 const postRoutes = require("./routes/postRoutes");
 const errorHandler = require("./middleware/error");
+const fs = require('fs');
 
 connectDB();
 
 const app = express();
 
-app.use(express.json());
+const dir = path.join(__dirname,'/uploads');
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, {
+		recursive: true
+	});
+}else{
+    console.log("exists")
+}
+
+// app.use(express.json());
+app.use(express.json({limit:'50mb'}));
+app.use(express.urlencoded({
+    limit: '50mb',
+    parameterLimit: 100000,
+    extended: true 
+  }));
 //https://git.heroku.com/enigmatic-temple-25922.git
 //https://enigmatic-temple-25922.herokuapp.com/
 app.use("/api/v1/posts", postRoutes);
 app.use("/api/v1/auth", require("./routes/authRoute"));
 app.use("/api/v1/admin", require("./routes/adminRoute"));
+app.use("/api/v1/leagueAdmin", require("./routes/leagueAdminRoute"));
 app.use("/api/v1/private", require("./routes/private"));
 
 // Error Handler Middleware
 app.use(errorHandler);
 
 
-console.log("buidl path", path.join(__dirname,'/client/build'));
 if(process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,'/client/build')));
     app.get('*',(req,res) => {
