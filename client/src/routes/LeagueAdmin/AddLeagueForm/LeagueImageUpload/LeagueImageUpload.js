@@ -1,6 +1,7 @@
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { DropzoneArea } from 'material-ui-dropzone';
+import { useState } from 'react';
 
 export default function LeagueImageUpload({
   handleNext,
@@ -10,52 +11,26 @@ export default function LeagueImageUpload({
   formErrors,
 }) {
   const isValid = city.length > 0 && !formErrors.city && date.length > 0 && phone.length > 0 && !formErrors.phone;
+  const [leagueImage, setLeagueImage] = useState();
+
+  const setImage = files => {
+    console.log(files);
+    setLeagueImage(files);
+  };
+
 
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="City"
-            name="city"
-            placeholder="Enter your city"
-            value={city || ''}
-            margin="normal"
-            onChange={handleChange}
-            error={!!formErrors.city}
-            helperText={formErrors.city}
-            required
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            label="Date of birth"
-            name="date"
-            type="date"
-            defaultValue={date || '1999-12-31'}
-            onChange={handleChange}
-            margin="normal"
-            required
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            fullWidth
-            label="Phone number"
-            name="phone"
-            placeholder="i.e: xxx-xxx-xxxx"
-            value={phone || ''}
-            onChange={handleChange}
-            error={!!formErrors.phone}
-            helperText={formErrors.phone}
-            margin="normal"
-          />
+          <DropzoneArea
+              acceptedFiles={['image/*', 'video/*', 'application/*']}
+              onChange={e => setImage(e)}
+              showFileNames
+              dropzoneText="Upload league Image"
+              showAlerts={false}
+              filesLimit={1}
+            />
         </Grid>
       </Grid>
       <div style={{ display: 'flex', marginTop: 50, justifyContent: 'flex-end' }}>

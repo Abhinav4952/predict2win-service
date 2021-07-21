@@ -6,6 +6,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import LeagueCategory from '../../../../helpers/enums/LeagueCategory';
 export default function LeagueBasicDetails({
   handleNext,
   handleChange,
@@ -21,15 +22,18 @@ export default function LeagueBasicDetails({
     !formErrors.email &&
     gender.length > 0;
 
+  const leagueCategory = {...LeagueCategory};
+  const categories = Object.keys(leagueCategory).map((key) => [key, leagueCategory[key]]);
+
   return (
     <>
       <Grid container spacing={2} noValidate>
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="First Name"
+            label="League Name"
             name="firstName"
-            placeholder="Your first name"
+            placeholder="League Name"
             margin="normal"
             value={firstName || ''}
             onChange={handleChange}
@@ -39,43 +43,61 @@ export default function LeagueBasicDetails({
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            label="Last Name"
-            name="lastName"
-            placeholder="Your last name"
-            margin="normal"
-            value={lastName || ''}
-            onChange={handleChange}
-            error={!!formErrors.lastName}
-            helperText={formErrors.lastName}
-            required
-          />
+          <FormControl fullWidth required margin="normal">
+            <InputLabel>League Category</InputLabel>
+            <Select value={gender} onChange={handleChange} name="gender">
+              {categories.map(ele => (<MenuItem value={ele[1]} key={ele[1]}>{ele[0]}</MenuItem>))}
+            </Select>
+          </FormControl>
         </Grid>
 
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="Email"
+            label="Start Time"
             name="email"
-            placeholder="Your email address"
-            type="email"
+            type="datetime-local"
             value={email || ''}
             onChange={handleChange}
             margin="normal"
             error={!!formErrors.email}
             helperText={formErrors.email}
+            InputLabelProps={{
+              shrink: true,
+            }}
             required
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required margin="normal">
-            <InputLabel>Gender</InputLabel>
-            <Select value={gender} onChange={handleChange} name="gender">
-              <MenuItem value={'Male'}>Male</MenuItem>
-              <MenuItem value={'Female'}>Female</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            fullWidth
+            label="End Time"
+            name="email"
+            type="datetime-local"
+            value={email || ''}
+            onChange={handleChange}
+            margin="normal"
+            error={!!formErrors.email}
+            helperText={formErrors.email}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+        <TextField
+            fullWidth
+            label="League Description"
+            name="email"
+            multiline
+            rows={3}
+            value={email || ''}
+            onChange={handleChange}
+            margin="normal"
+            error={!!formErrors.email}
+            helperText={formErrors.email}
+          />
         </Grid>
       </Grid>
       <div style={{ display: 'flex', marginTop: 50, justifyContent: 'flex-end' }}>

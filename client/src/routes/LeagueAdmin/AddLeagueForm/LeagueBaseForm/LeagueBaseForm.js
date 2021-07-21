@@ -11,7 +11,7 @@ import LeagueDetailsConfirmation from '../LeagueDetailsConfirmation/LeagueDetail
 import LeagueAddSucess from '../../LeagueAddSucess/LeagueAddSucess';
 
 // Step titles
-const labels = ['First Step', 'Second Step', 'Confirmation'];
+const labels = ['League Details', 'League Image', 'Confirmation'];
 
 const initialValues = {
   firstName: '',
@@ -119,10 +119,10 @@ export default function LeagueBaseForm({}) {
         <>
           <Box style={{ margin: '30px 0 50px' }}>
             <Typography variant="h4" align="center">
-              Multi Step Form
+              Add League
             </Typography>
             <Typography variant="subtitle2" align="center" style={{ margin: '10px 0' }}>
-              React Material UI multi step form with basic form validation logic.
+              Register your League and invite participants to join here
             </Typography>
           </Box>
           <Stepper activeStep={activeStep} style={{ margin: '30px 0 15px' }} alternativeLabel>

@@ -17,6 +17,7 @@ exports.addLeague = async (req, res, next) => {
       description: Joi.string(),
       leagueCategory: Joi.string().required(),
       expiryDate: Joi.string().required(),
+      startDate: Joi.string().required(),
     });
 
     // schema options
