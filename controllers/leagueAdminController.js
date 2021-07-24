@@ -8,6 +8,7 @@ const UserRole = require('../helpers/enums/UserRole');
 const LeagueStatus = require('../helpers/enums/LeagueStatus');
 const LeagueCategory = require('../helpers/enums/LeagueCategory');
 const sendEmail = require('../utils/sendEmail');
+const mongoose = require('mongoose');
 
 exports.addLeague = async (req, res, next) => {
   try {
@@ -18,7 +19,9 @@ exports.addLeague = async (req, res, next) => {
       name: Joi.string().required(),
       userId: Joi.string().required(),
       description: Joi.string(),
-      leagueCategory: Joi.string().required().valid(...Object.values(LeagueCategory)),
+      leagueCategory: Joi.string()
+        .required()
+        .valid(...Object.values(LeagueCategory)),
       expiryDate: Joi.string().required(),
       startDate: Joi.string(),
     });
@@ -70,6 +73,37 @@ exports.addLeague = async (req, res, next) => {
     res.status(201).json({
       success: true,
       data: leagueDetails,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getCurretUserLeague = async (req, res, next) => {
+  try {
+    const userDetails = req.user;
+    console.log(userDetails._id);
+    // const leagues = await League.find({ userId: userDetails._id }, {__v:0});
+    const leagues = await League.aggregate([
+      {
+        $match: {
+          userId: userDetails._id,
+        },
+      },
+      {
+        $project: {
+          __v: 0,
+        },
+      },
+      {
+        $sort: {
+          expiryDate: -1,
+        },
+      },
+    ]);
+    res.status(200).json({
+      success: true,
+      data: leagues,
     });
   } catch (err) {
     next(err);
