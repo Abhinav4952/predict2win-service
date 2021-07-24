@@ -99,7 +99,7 @@ exports.getCurretUserLeague = async (req, res, next) => {
         $sort: {
           expiryDate: -1,
         },
-      }
+      },
     ]);
     res.status(200).json({
       success: true,

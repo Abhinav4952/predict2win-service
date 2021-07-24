@@ -14,7 +14,7 @@ const LeagueSchema = new mongoose.Schema({
   },
   leagueStatus: {
     type: String,
-    enum: ['CREATED', 'REGISTRATION_OPEN','REGISTRATION_CLOSED','IN_PROGRESS', 'EXPIRED'],
+    enum: ['CREATED', 'REGISTRATION_OPEN', 'REGISTRATION_CLOSED', 'IN_PROGRESS', 'EXPIRED'],
     default: 'CREATED',
   },
   image: {
