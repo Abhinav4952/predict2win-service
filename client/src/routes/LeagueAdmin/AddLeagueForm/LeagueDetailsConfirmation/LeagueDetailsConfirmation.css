@@ -1,0 +1,19 @@
+.league-icon-upload{
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 490px;
+    max-height: 200px;
+
+}
+
+@media screen and (max-width:420px) {
+    .league-icon-upload{
+        display: block;
+        width: auto;
+        height: auto;
+        max-width: 240px;
+        max-height: 100px;
+    
+    }
+}

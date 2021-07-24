@@ -3,58 +3,58 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
+import { ListItemIcon, Typography } from '@material-ui/core';
+import './LeagueDetailsConfirmation.css';
 
 export default function LeagueDetailsConfirmation({
   handleNext,
   handleBack,
-  values: { firstName, lastName, email, gender, date, phone, city },
+  values: { leagueName, leagueCategory, endTime, leagueDescription, leagueIcon },
 }) {
   const handleSubmit = () => {
-    console.log({ firstName, lastName, email, gender, date, phone, city });
+    console.log(leagueIcon);
+    console.log({ leagueName, leagueCategory, endTime, leagueDescription });
     handleNext();
   };
   return (
     <>
       <List disablePadding>
         <ListItem>
-          <ListItemText primary="First Name" secondary={firstName} />
+          <ListItemText primary="League Name" secondary={leagueName || '-'} />
         </ListItem>
 
         <Divider />
 
         <ListItem>
-          <ListItemText primary="Last Name" secondary={lastName} />
+          <ListItemText primary="League Category" secondary={leagueCategory || '-'} />
         </ListItem>
 
         <Divider />
 
         <ListItem>
-          <ListItemText primary="Email Address" secondary={email} />
+          <ListItemText primary="End Time" secondary={endTime || '-'} />
         </ListItem>
 
         <Divider />
 
         <ListItem>
-          <ListItemText primary="Gender" secondary={gender} />
+          <ListItemText primary="League Description" secondary={leagueDescription || '-'} />
         </ListItem>
 
         <Divider />
 
         <ListItem>
-          <ListItemText primary="Date of birth" secondary={date} />
+          <ListItemIcon>
+            <div className="d-flex flex-column">
+              <Typography variant="body1" component="span">
+                League Icon
+              </Typography>
+              <img src={URL.createObjectURL(leagueIcon)} alt={leagueName} className="league-icon-upload"></img>
+            </div>
+          </ListItemIcon>
         </ListItem>
 
         <Divider />
-
-        <ListItem>
-          <ListItemText primary="City" secondary={city} />
-        </ListItem>
-
-        <Divider />
-
-        <ListItem>
-          <ListItemText primary="phone" secondary={phone.length > 0 ? phone : 'Not Provided'} />
-        </ListItem>
       </List>
 
       <div style={{ display: 'flex', marginTop: 50, justifyContent: 'flex-end' }}>

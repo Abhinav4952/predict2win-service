@@ -10,20 +10,19 @@ import LeagueCategory from '../../../../helpers/enums/LeagueCategory';
 export default function LeagueBasicDetails({
   handleNext,
   handleChange,
-  values: { firstName, lastName, email, gender },
+  values: { leagueName, leagueCategory, endTime, leagueDescription },
   formErrors,
 }) {
   const isValid =
-    firstName.length > 0 &&
-    !formErrors.firstName &&
-    lastName.length > 0 &&
-    !formErrors.lastName &&
-    email.length > 0 &&
-    !formErrors.email &&
-    gender.length > 0;
+    leagueName?.length > 0 &&
+    !formErrors?.leagueName &&
+    leagueCategory?.length > 0 &&
+    !formErrors?.leagueCategory &&
+    endTime?.length > 0 &&
+    !formErrors?.email;
 
-  const leagueCategory = {...LeagueCategory};
-  const categories = Object.keys(leagueCategory).map((key) => [key, leagueCategory[key]]);
+  const leagueCategories = { ...LeagueCategory };
+  const categories = Object.keys(leagueCategories).map(key => [key, leagueCategories[key]]);
 
   return (
     <>
@@ -32,53 +31,39 @@ export default function LeagueBasicDetails({
           <TextField
             fullWidth
             label="League Name"
-            name="firstName"
+            name="leagueName"
             placeholder="League Name"
             margin="normal"
-            value={firstName || ''}
+            value={leagueName || ''}
             onChange={handleChange}
-            error={!!formErrors.firstName}
-            helperText={formErrors.firstName}
+            error={!!formErrors.leagueName}
+            helperText={formErrors.leagueName}
             required
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth required margin="normal">
             <InputLabel>League Category</InputLabel>
-            <Select value={gender} onChange={handleChange} name="gender">
-              {categories.map(ele => (<MenuItem value={ele[1]} key={ele[1]}>{ele[0]}</MenuItem>))}
+            <Select value={leagueCategory} onChange={handleChange} name="leagueCategory">
+              {categories.map(ele => (
+                <MenuItem value={ele[1]} key={ele[1]}>
+                  {ele[0]}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
-        </Grid>
-
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            label="Start Time"
-            name="email"
-            type="datetime-local"
-            value={email || ''}
-            onChange={handleChange}
-            margin="normal"
-            error={!!formErrors.email}
-            helperText={formErrors.email}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            required
-          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
             label="End Time"
-            name="email"
+            name="endTime"
             type="datetime-local"
-            value={email || ''}
+            value={endTime || ''}
             onChange={handleChange}
             margin="normal"
-            error={!!formErrors.email}
-            helperText={formErrors.email}
+            error={!!formErrors.endTime}
+            helperText={formErrors.endTime}
             InputLabelProps={{
               shrink: true,
             }}
@@ -86,17 +71,17 @@ export default function LeagueBasicDetails({
           />
         </Grid>
         <Grid item xs={12}>
-        <TextField
+          <TextField
             fullWidth
             label="League Description"
-            name="email"
+            name="leagueDescription"
             multiline
             rows={3}
-            value={email || ''}
+            value={leagueDescription || ''}
             onChange={handleChange}
             margin="normal"
-            error={!!formErrors.email}
-            helperText={formErrors.email}
+            error={!!formErrors.leagueDescription}
+            helperText={formErrors.leagueDescription}
           />
         </Grid>
       </Grid>

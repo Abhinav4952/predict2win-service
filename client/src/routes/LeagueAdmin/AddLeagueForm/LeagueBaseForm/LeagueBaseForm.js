@@ -14,44 +14,35 @@ import LeagueAddSucess from '../../LeagueAddSucess/LeagueAddSucess';
 const labels = ['League Details', 'League Image', 'Confirmation'];
 
 const initialValues = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  gender: '',
-  date: '',
-  city: '',
-  phone: '',
+  leagueName: '',
+  leagueCategory: '',
+  endTime: '',
+  leagueDescription: '',
 };
 
 const fieldsValidation = {
-  firstName: {
+  leagueName: {
     error: '',
     validate: 'text',
     minLength: 2,
-    maxLength: 20,
-  },
-  lastName: {
-    error: '',
-    validate: 'text',
-    minLength: 2,
-    maxLength: 20,
-  },
-  email: {
-    error: '',
-    validate: 'email',
-  },
-  gender: {},
-  date: {},
-  city: {
-    error: '',
-    validate: 'text',
-    minLength: 3,
-    maxLength: 20,
-  },
-  phone: {
-    error: '',
-    validate: 'phone',
     maxLength: 15,
+  },
+  leagueCategory: {
+    error: '',
+    validate: 'text',
+  },
+  endTime: {
+    error: '',
+    validate: 'date',
+  },
+  leagueDescription: {
+    error: '',
+    validate: 'text',
+    minLength: 2,
+    maxLength: 30,
+  },
+  leagueIcon: {
+    validate: 'image',
   },
 };
 
@@ -66,6 +57,7 @@ export default function LeagueBaseForm({}) {
   const handleBack = () => setActiveStep(prev => prev - 1);
 
   const handleChange = e => {
+    console.log(e.target);
     const { name, value } = e.target;
 
     // Set values

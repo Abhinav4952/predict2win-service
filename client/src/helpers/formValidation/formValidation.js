@@ -5,6 +5,7 @@ const isZip = RegExp(/^[0-9]{5}([- /]?[0-9]{4})?$/); // us
 const isNumber = RegExp(/^\d+$/);
 
 export default function formValidation(name, value, schema) {
+  if (!schema[name]) return '';
   const { validate, minLength, maxLength } = schema[name];
   let error = '';
 
@@ -36,7 +37,10 @@ export default function formValidation(name, value, schema) {
     case 'checkbox':
       if (!value) error = 'Please select a value';
       break;
-
+    case 'image':
+      if (!value) error = 'Please upload a image';
+      // if(! (value instanceof File)) error = 'Please upload a image';
+      break;
     default:
       break;
   }
