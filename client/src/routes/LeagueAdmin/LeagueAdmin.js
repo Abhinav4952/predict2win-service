@@ -3,6 +3,7 @@ import comingSoon from '../../assets/comingSoon.jpg';
 import Navigation from '../../components/lib/Navigation/Navigation';
 import AddLeague from './AddLeague/AddLeague';
 import AddLeagueForm from './AddLeagueForm/AddLeagueForm';
+import LeagueAdminHome from './LeagueAdminHome/LeagueAdminHome';
 
 export default function LeagueAdmin() {
   const routes = [
@@ -13,9 +14,7 @@ export default function LeagueAdmin() {
     <>
       <Navigation routeDetails={routes} />
       <Route exact path="/">
-        <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
-          <img src={comingSoon} alt="" style={{ width: '100%' }} />
-        </div>
+        <LeagueAdminHome />
       </Route>
       <Route exact path="/add-league">
         {/* <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
