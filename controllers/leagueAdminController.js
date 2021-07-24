@@ -6,17 +6,21 @@ const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const UserRole = require('../helpers/enums/UserRole');
 const LeagueStatus = require('../helpers/enums/LeagueStatus');
+const LeagueCategory = require('../helpers/enums/LeagueCategory');
+const sendEmail = require('../utils/sendEmail');
 
 exports.addLeague = async (req, res, next) => {
   try {
-    const { name, userId, description, leagueCategory, expiryDate, } = req.body;
+    const { name, userId, description, leagueCategory, expiryDate } = req.body;
+
     console.log(req.file.filename);
     const schema = Joi.object({
       name: Joi.string().required(),
       userId: Joi.string().required(),
       description: Joi.string(),
-      leagueCategory: Joi.string().required(),
+      leagueCategory: Joi.string().required().valid(...Object.values(LeagueCategory)),
       expiryDate: Joi.string().required(),
+      startDate: Joi.string(),
     });
 
     // schema options
@@ -38,18 +42,31 @@ exports.addLeague = async (req, res, next) => {
     }
 
     const leagueDetails = await League.create({
-        name,
-        userId,
-        description,
-        leagueCategory,
-        leagueStatus: LeagueStatus.Created,
-        image: {
-            data: fs.readFileSync(path.join(__dirname ,'..' ,'uploads' , req.file.filename)),
-            contentType: 'image/png'
-        },
-        created: new Date().toISOString(),
-        expiryDate,
+      name,
+      userId,
+      description,
+      leagueCategory,
+      leagueStatus: LeagueStatus.Created,
+      image: {
+        data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)),
+        contentType: 'image/png',
+      },
+      created: new Date().toISOString(),
+      expiryDate,
+    });
+
+    const message = `
+      <h1>${name} has been successfully created.Please add league questions to open the registrations</h1>
+    `;
+    try {
+      await sendEmail({
+        to: user?.email,
+        subject: 'League Confirmation',
+        text: message,
       });
+    } catch (err) {
+      console.log(err);
+    }
     res.status(201).json({
       success: true,
       data: leagueDetails,

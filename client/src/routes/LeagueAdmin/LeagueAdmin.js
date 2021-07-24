@@ -2,6 +2,7 @@ import { Route } from 'react-router-dom';
 import comingSoon from '../../assets/comingSoon.jpg';
 import Navigation from '../../components/lib/Navigation/Navigation';
 import AddLeague from './AddLeague/AddLeague';
+import AddLeagueForm from './AddLeagueForm/AddLeagueForm';
 
 export default function LeagueAdmin() {
   const routes = [
@@ -17,9 +18,10 @@ export default function LeagueAdmin() {
         </div>
       </Route>
       <Route exact path="/add-league">
-        <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
+        {/* <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
           <img src={comingSoon} alt="" style={{ width: '100%' }} />
-        </div>
+        </div> */}
+        <AddLeagueForm />
       </Route>
       <Route exact path="/add-league-test">
         <AddLeague />

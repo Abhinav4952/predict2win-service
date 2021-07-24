@@ -14,7 +14,7 @@ const LeagueSchema = new mongoose.Schema({
   },
   leagueStatus: {
     type: String,
-    enum: ['CREATED', 'IN_PROGRESS', 'EXPIRED'],
+    enum: ['CREATED', 'REGISTRATION_OPEN','REGISTRATION_CLOSED','IN_PROGRESS', 'EXPIRED'],
     default: 'CREATED',
   },
   image: {
@@ -26,7 +26,12 @@ const LeagueSchema = new mongoose.Schema({
     enum: ['CRICKET', 'FOOT_BALL', 'BASKET_BALL'],
     default: 'CREATED',
   },
+  slots: {
+    type: Number,
+    default: 0,
+  },
   created: { type: String },
+  startDate: { type: String },
   expiryDate: { type: String },
   updated: { type: String, required: false, default: new Date().toISOString() },
 });
