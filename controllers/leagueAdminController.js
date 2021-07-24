@@ -56,7 +56,7 @@ exports.addLeague = async (req, res, next) => {
     });
 
     const message = `
-      <h1>${name} has been successfully created.Please add league questions to open the registrationg</h1>
+      <h1>${name} has been successfully created.Please add league questions to open the registrations</h1>
     `;
     try {
       await sendEmail({
