@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
-import { ListItemIcon, Snackbar, Typography } from '@material-ui/core';
+import { LinearProgress, ListItemIcon, Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import './LeagueDetailsConfirmation.css';
 import { useEffect, useState } from 'react';
@@ -17,6 +17,7 @@ export default function LeagueDetailsConfirmation({
 }) {
   const [user, setUser] = useState('');
   const [error, setError] = useState();
+  const [progress, setProgress] = useState(false);
   const vertical = 'bottom';
   const horizontal = 'center';
 
@@ -39,6 +40,7 @@ export default function LeagueDetailsConfirmation({
 
   const handleSubmit = async () => {
     try {
+      setProgress(true);
       const formData = new FormData();
       formData.append('image', leagueIcon);
       formData.append('name', leagueName);
@@ -50,6 +52,7 @@ export default function LeagueDetailsConfirmation({
       console.log(privateRequest);
       handleNext();
     } catch (err) {
+      setProgress(false);
       console.log(JSON.stringify(err));
       setError(err?.data?.error || 'unable to create a league');
       setTimeout(() => setError(''), 3000);
@@ -101,13 +104,21 @@ export default function LeagueDetailsConfirmation({
         </ListItem>
 
         <Divider />
+
+        {progress ? <LinearProgress /> : null}
       </List>
 
       <div style={{ display: 'flex', marginTop: 50, justifyContent: 'flex-end' }}>
         <Button variant="contained" color="default" onClick={handleBack}>
           Back
         </Button>
-        <Button style={{ marginLeft: 20 }} variant="contained" color="secondary" onClick={handleSubmit}>
+        <Button
+          style={{ marginLeft: 20 }}
+          variant="contained"
+          color="secondary"
+          onClick={handleSubmit}
+          disabled={progress}
+        >
           Confirm & Continue
         </Button>
       </div>
