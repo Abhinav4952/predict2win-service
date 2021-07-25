@@ -9,17 +9,17 @@ export default function ViewLeague({}) {
       <Container maxWidth="xl" className="p-3">
         <Grid container spacing={3}>
           <LeagueTiles />
-          <Grid item xs={12} md={6} lg={5}>
+          <Grid item xs={12} md={6} lg={6}>
             <Box>
                 Testst
             </Box>
           </Grid>
-          <Grid item xs={12} sm={12} md={7}>
+          <Grid item xs={12} sm={12} md={6}>
             <Paper elevation={"3"}>
                 <LeagueBaseForm />
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={12}>
+          <Grid item xs={12} sm={12} md={6}>
             <Paper elevation={"3"} className="p-3">
                 <LeagueUserDashboard />
             </Paper>
