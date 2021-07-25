@@ -4,6 +4,7 @@ import Navigation from '../../components/lib/Navigation/Navigation';
 import AddLeague from './AddLeague/AddLeague';
 import AddLeagueForm from './AddLeagueForm/AddLeagueForm';
 import LeagueAdminHome from './LeagueAdminHome/LeagueAdminHome';
+import ViewLeague from './ViewLeague/ViewLeague';
 
 export default function LeagueAdmin() {
   const routes = [
@@ -23,9 +24,10 @@ export default function LeagueAdmin() {
         <AddLeagueForm />
       </Route>
       <Route exact path="/view-league/:leagueId">
-        <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
+        {/* <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
           <img src={comingSoon} alt="" style={{ width: '100%' }} />
-        </div>
+        </div> */}
+        <ViewLeague />
       </Route>
       <Route exact path="/add-league-test">
         <AddLeague />
