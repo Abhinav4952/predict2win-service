@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -6,7 +7,11 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-export default function LeagueDetails({ leagueStatus, leagueCategory, name, userId, id, image, expiryDate }) {
+export default function LeagueDetails({ name, description, _id, image }) {
+  const history = useHistory();
+
+  const viewDetails = () => history.push(`/view-league/${_id}`);
+
   return (
     <Card>
       <CardActionArea>
@@ -19,11 +24,10 @@ export default function LeagueDetails({ leagueStatus, leagueCategory, name, user
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            Lizard
+            {name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents
-            except Antarctica
+            {description}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -31,8 +35,8 @@ export default function LeagueDetails({ leagueStatus, leagueCategory, name, user
         <Button size="small" color="primary">
           Share
         </Button>
-        <Button size="small" color="primary">
-          Learn More
+        <Button size="small" color="primary" onClick={() => viewDetails()}>
+          View Details
         </Button>
       </CardActions>
     </Card>

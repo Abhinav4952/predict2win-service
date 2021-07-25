@@ -22,6 +22,11 @@ export default function LeagueAdmin() {
         </div> */}
         <AddLeagueForm />
       </Route>
+      <Route exact path="/view-league/:leagueId">
+        <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
+          <img src={comingSoon} alt="" style={{ width: '100%' }} />
+        </div>
+      </Route>
       <Route exact path="/add-league-test">
         <AddLeague />
       </Route>

@@ -33,17 +33,17 @@ export default function LeagueAdminHome({}) {
       console.log('fecthed user', user);
       const leagueDetails = await Api.performRequest(getAPIConfiguration());
       setLeagues(leagueDetails?.data || []);
-      setTimeout(() => setProgress(false), 2000);
+      setTimeout(() => setProgress(false), 500);
     } catch (err) {
       console.log(err);
       setLeagues([]);
-      setTimeout(() => setProgress(false), 2000);
+      setTimeout(() => setProgress(false), 500);
     }
   };
 
   const getLeagueContainer = leagueDetails => {
     return leagueDetails.map(ele => (
-      <Grid item xs={12} sm={6} md={4} style={{ maxWidth: '350px' }}>
+      <Grid item xs={12} sm={6} md={4} style={{ maxWidth: '420px' }} key={ele?._id}>
         <LeagueDetails {...ele} />
       </Grid>
     ));
@@ -54,7 +54,7 @@ export default function LeagueAdminHome({}) {
       return emptyLeagues;
     }
     return (
-      <Grid container direction="row" justifyContent="start" spacing={5} className={classes.gridContainer}>
+      <Grid container direction="row" spacing={5} className={classes.gridContainer}>
         {getLeagueContainer(leagues)}
       </Grid>
     );
@@ -73,7 +73,7 @@ export default function LeagueAdminHome({}) {
 
   const progressContainer = (
     <div>
-      <Grid container spacing={0} align="center" justify="center" direction="column">
+      <Grid container spacing={0} align="center" justifyContent="center" direction="column">
         <Grid item>
           <LinearProgress />
         </Grid>
