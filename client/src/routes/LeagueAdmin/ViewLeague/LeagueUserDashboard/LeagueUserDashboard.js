@@ -1,6 +1,7 @@
-import { AppBar, Box, Tab, Tabs, Typography, useTheme } from '@material-ui/core';
+import { AppBar, Box, Grid, Tab, Tabs, Typography, useTheme } from '@material-ui/core';
 import { useState } from 'react';
 import SwipeableViews from 'react-swipeable-views';
+import UserListBootstrap from './UserListBootstrap/UserListBootstrap';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,7 +61,11 @@ export default function LeagueUserDashboard({}) {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
-          Item One
+          <Grid container spacing={3} justifyContent="center" alignContent="center" alignItems="center">
+            <Grid item xs={12} sm={12} md={12} style={{height: "400px", width: "100%"}}>
+              <UserListBootstrap />
+            </Grid>
+          </Grid>
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
           Item Two
