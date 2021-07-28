@@ -1,4 +1,4 @@
-import { Box, Grid, Container, Paper } from '@material-ui/core';
+import { Box, Grid, Container, Paper, LinearProgress, CircularProgress } from '@material-ui/core';
 import LeagueTiles from './LeagueTiles/LeagueTiles';
 import LeagueUserDashboard from './LeagueUserDashboard/LeagueUserDashboard';
 import QuestionsPanel from './QuestionsPanel/QuestionsPanel';
@@ -12,7 +12,11 @@ export default function ViewLeague({}) {
           <Grid item xs={12} md={12} lg={6}>
             <Grid container spacing={2} direction="column">
               <Grid item xs={12} sm={12} md={12}>
-                <Box>Testst</Box>
+                <div style={{height: "230px"}} className="d-flex justify-content-center align-items-center align-content-center">
+                  <Box>
+                    <CircularProgress />
+                  </Box>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <Paper elevation={'3'} className="p-3">
