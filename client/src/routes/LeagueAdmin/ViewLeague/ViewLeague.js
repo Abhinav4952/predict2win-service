@@ -1,6 +1,7 @@
 import { Box, Grid, Container, Paper, LinearProgress, CircularProgress } from '@material-ui/core';
 import LeagueTiles from './LeagueTiles/LeagueTiles';
 import LeagueUserDashboard from './LeagueUserDashboard/LeagueUserDashboard';
+import QuestionsList from './QuestionsList/QuestionsList';
 import QuestionsPanel from './QuestionsPanel/QuestionsPanel';
 
 export default function ViewLeague({}) {
@@ -27,7 +28,8 @@ export default function ViewLeague({}) {
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
             <Paper elevation={'3'} className="p-3">
-              <QuestionsPanel />
+              {/* <QuestionsPanel /> */}
+              <QuestionsList />
             </Paper>
           </Grid>
         </Grid>
