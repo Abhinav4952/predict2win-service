@@ -1,7 +1,16 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
-const { addLeague, getCurretUserLeague, getLeagueById, addQuestion, updateAnswers } = require('../controllers/leagueAdminController');
+const {
+  addLeague,
+  getCurretUserLeague,
+  getLeagueById,
+  addQuestion,
+  updateAnswers,
+  startLeague,
+  stopLeague,
+  getQuestionByLeague,
+} = require('../controllers/leagueAdminController');
 const { leagueAdminProtect } = require('../middleware/auth');
 
 var storage = multer.diskStorage({
@@ -19,6 +28,9 @@ router.route('/addLeague').post(leagueAdminProtect, upload.single('image'), addL
 router.route('/getLeagues').get(leagueAdminProtect, getCurretUserLeague);
 router.route('/getLeagueById/:leagueId').get(leagueAdminProtect, getLeagueById);
 router.route('/addQuestion').post(leagueAdminProtect, addQuestion);
+router.route('/getQuestionsByLeague/:leagueId').get(leagueAdminProtect, getQuestionByLeague);
 router.route('/updateAnswer').post(leagueAdminProtect, updateAnswers);
+router.route('/startLeague').post(leagueAdminProtect, startLeague);
+router.route('/stopLeague').post(leagueAdminProtect, stopLeague);
 
 module.exports = router;

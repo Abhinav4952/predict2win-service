@@ -12,7 +12,7 @@ import {
 import SaveIcon from '@material-ui/icons/Save';
 import { useState } from 'react';
 
-export default function QuestionsList() {
+export default function QuestionsList({onSave}) {
   const createGroups = (arr, numGroups) => {
     const perGroup = Math.ceil(arr.length / numGroups);
     return new Array(numGroups).fill('').map((_, i) => arr.slice(i * perGroup, (i + 1) * perGroup));
@@ -92,7 +92,7 @@ export default function QuestionsList() {
       {questionsContainer}
       <Grid item xs={12} md={12} lg={12} className="my-3">
         <Grid container spacing={2} justifyContent="flex-end">
-          <Button variant="contained" color="primary" size="large" startIcon={<SaveIcon />} onClick={() => console.log(formValues)}>
+          <Button variant="contained" color="primary" size="large" startIcon={<SaveIcon />} onClick={() => onSave(formValues)}>
             Submit
           </Button>
         </Grid>

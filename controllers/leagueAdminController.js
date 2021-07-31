@@ -10,7 +10,7 @@ const LeagueCategory = require('../helpers/enums/LeagueCategory');
 const sendEmail = require('../utils/sendEmail');
 const mongoose = require('mongoose');
 const LeagueQuestionType = require('../helpers/enums/LeagueQuestionType');
-var moment = require('moment');  
+var moment = require('moment');
 const LeagueQuestion = require('../models/LeagueQuestion');
 
 exports.addLeague = async (req, res, next) => {
@@ -100,8 +100,8 @@ exports.addQuestion = async (req, res, next) => {
       wrongAnswerValue: Joi.number(),
     });
 
-     // schema options
-     const schemaOptions = {
+    // schema options
+    const schemaOptions = {
       abortEarly: false, // include all errors
       allowUnknown: true, // ignore unknown props
       stripUnknown: true, // remove unknown props
@@ -122,9 +122,9 @@ exports.addQuestion = async (req, res, next) => {
     if (league?.userId.toString() !== req.user._id.toString()) {
       return next(new ErrorResponse('UnAuthorized to add Question for different users league', 401));
     }
-    
-    if(!moment(new Date().toISOString()).isBefore(league?.expiryDate)){
-      return next(new ErrorResponse("League Expired", 400, 'ValidationError'));
+
+    if (!moment(new Date().toISOString()).isBefore(league?.expiryDate)) {
+      return next(new ErrorResponse('League Expired', 400, 'ValidationError'));
     }
 
     const leagueQuestion = await LeagueQuestion.create({
@@ -147,12 +147,160 @@ exports.addQuestion = async (req, res, next) => {
   }
 };
 
+exports.getQuestionByLeague = async (req, res, next) => {
+  try {
+    const { leagueId } = req.params;
+
+    const schema = Joi.object({
+      leagueId: Joi.string().required(),
+    });
+
+    // schema options
+    const schemaOptions = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.params, schemaOptions);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    if (league?.userId.toString() !== req.user._id.toString()) {
+      return next(new ErrorResponse('UnAuthorized to view Questions for different users league', 401));
+    }
+
+    const leagueQuestions = await LeagueQuestion.find({ leagueId }, { __v: 0 });
+
+    res.status(201).json({
+      success: true,
+      data: leagueQuestions,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array);
   }
 }
 
+exports.startLeague = async (req, res, next) => {
+  try {
+    const { leagueId, slots } = req.body;
+
+    const schema = Joi.object({
+      leagueId: Joi.string().required(),
+      slots: Joi.number().required(),
+    });
+
+    // schema options
+    const schemaOptions = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.body, schemaOptions);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const league = await League.findById(leagueId);
+    console.log(league);
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    if (league?.userId.toString() !== req.user._id.toString()) {
+      return next(new ErrorResponse('UnAuthorized to start league of different users league', 401));
+    }
+
+    if (league?.leagueStatus !== LeagueStatus.Created) {
+      return next(new ErrorResponse('League Status should be created', 400, 'ValidationError'));
+    }
+
+    if (!moment(new Date().toISOString()).isBefore(league?.expiryDate)) {
+      return next(new ErrorResponse('League Expired', 400, 'ValidationError'));
+    }
+
+
+    await League.findByIdAndUpdate(leagueId, {
+      leagueStatus: LeagueStatus.RegistrationOpen,
+      slots,
+      updated: new Date().toISOString(),
+    });
+    res.status(201).json({
+      success: true,
+      data: 'Answers Updated Successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.stopLeague = async (req, res, next) => {
+  try {
+    const { leagueId } = req.body;
+
+    const schema = Joi.object({
+      leagueId: Joi.string().required(),
+      slots: Joi.number().required(),
+    });
+
+    // schema options
+    const schemaOptions = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.body, schemaOptions);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    if (league?.userId.toString() !== req.user._id.toString()) {
+      return next(new ErrorResponse('UnAuthorized to stop league of different users league', 401));
+    }
+
+    if (!moment(new Date().toISOString()).isBefore(league?.expiryDate)) {
+      return next(new ErrorResponse('League Expired', 400, 'ValidationError'));
+    }
+
+    const currentDate = new Date().toISOString();
+
+    await League.findByIdAndUpdate(leagueId, {
+      leagueStatus: LeagueStatus.Expired,
+      expiryDate: currentDate,
+      updated: currentDate,
+    });
+    res.status(201).json({
+      success: true,
+      data: 'Answers Updated Successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.updateAnswers = async (req, res, next) => {
   try {
@@ -190,6 +338,10 @@ exports.updateAnswers = async (req, res, next) => {
       return next(new ErrorResponse('UnAuthorized to add Answers for different users league', 401));
     }
 
+    if (leagueStatus === LeagueStatus.RegistrationOpen) {
+      return next(new ErrorResponse('League is not yet started', 400, 'ValidationError'));
+    }
+
     if (!moment(new Date().toISOString()).isBefore(league?.expiryDate)) {
       return next(new ErrorResponse('League Expired', 400, 'ValidationError'));
     }
@@ -199,7 +351,10 @@ exports.updateAnswers = async (req, res, next) => {
       console.log(res);
     });
 
-    await League.findByIdAndUpdate(leagueId, { leagueStatus: LeagueStatus.RegistrationClosed });
+    await League.findByIdAndUpdate(leagueId, {
+      leagueStatus: LeagueStatus.RegistrationClosed,
+      updated: new Date().toISOString(),
+    });
     res.status(201).json({
       success: true,
       data: 'Answers Updated Successfully',
@@ -240,9 +395,8 @@ exports.getCurretUserLeague = async (req, res, next) => {
   }
 };
 
-exports.getLeagueById= async (req, res, next) => {
+exports.getLeagueById = async (req, res, next) => {
   try {
-
     const leagueId = req.params.leagueId;
 
     const league = await League.findById(leagueId);
