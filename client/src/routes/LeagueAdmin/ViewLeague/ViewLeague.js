@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../api/Api';
 import LeagueStatus from '../../../helpers/enums/LeagueStatus';
+import AnsweredQuestionsList from './AnsweredQuestionsList/AnsweredQuestionsList';
 import LeagueInfo from './LeagueInfo/LeagueInfo';
 import LeagueTiles from './LeagueTiles/LeagueTiles';
 import LeagueUserDashboard from './LeagueUserDashboard/LeagueUserDashboard';
@@ -29,14 +30,6 @@ export default function ViewLeague({}) {
       setProgress(false);
     } catch (err) {
       console.log(err);
-    }
-  };
-
-  const onSubmitAnswers = async answers => {
-    try {
-      console.log(answers);
-    } catch (err) {
-      console.log('err');
     }
   };
 
@@ -80,8 +73,9 @@ export default function ViewLeague({}) {
                   <QuestionsPanel onStartLeague={data => setleagueDetails(data)} />
                 ) : null}
                 {leagueDetails?.leagueStatus === LeagueStatus.RegistrationOpen ? (
-                  <QuestionsList onSave={onSubmitAnswers} />
+                  <QuestionsList onSave={data => setleagueDetails(data)} />
                 ) : null}
+                {leagueDetails?.leagueStatus === LeagueStatus.RegistrationClosed ? <AnsweredQuestionsList /> : null}
               </Paper>
             </Grid>
           </Grid>

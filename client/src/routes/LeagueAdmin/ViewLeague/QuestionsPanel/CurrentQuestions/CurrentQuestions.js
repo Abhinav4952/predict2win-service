@@ -11,9 +11,7 @@ export default function CurrentQuestions({ leagueQuestions }) {
     const updatedEle = { name, options: createGroups(options, 2) };
     return updatedEle;
   });
-
-  console.log(updatedQuestions);
-
+  
   const updatedQuestinsCotainer = updatedQuestions.map(question => (
     <Grid item xs={12} md={12} lg={12}>
       <Paper elevation={1} className="p-3">

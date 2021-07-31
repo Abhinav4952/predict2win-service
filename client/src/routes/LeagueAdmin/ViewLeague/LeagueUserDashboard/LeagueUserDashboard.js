@@ -62,7 +62,7 @@ export default function LeagueUserDashboard({}) {
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
           <Grid container spacing={3} justifyContent="center" alignContent="center" alignItems="center">
-            <Grid item xs={12} sm={12} md={12} style={{height: "400px", width: "100%"}}>
+            <Grid item xs={12} sm={12} md={12} style={{ height: '400px', width: '100%' }}>
               <UserListBootstrap />
             </Grid>
           </Grid>

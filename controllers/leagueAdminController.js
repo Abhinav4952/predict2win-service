@@ -180,7 +180,7 @@ exports.getQuestionByLeague = async (req, res, next) => {
 
     const leagueQuestions = await LeagueQuestion.find({ leagueId }, { __v: 0 });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: leagueQuestions,
     });
@@ -338,7 +338,7 @@ exports.updateAnswers = async (req, res, next) => {
       return next(new ErrorResponse('UnAuthorized to add Answers for different users league', 401));
     }
 
-    if (leagueStatus === LeagueStatus.RegistrationOpen) {
+    if (league?.leagueStatus !== LeagueStatus.RegistrationOpen) {
       return next(new ErrorResponse('League is not yet started', 400, 'ValidationError'));
     }
 
