@@ -109,3 +109,16 @@ exports.getCurretUserLeague = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getLeagueById= async (req, res, next) => {
+  try {
+    const league = await League.findById(req.params.leagueId);
+    console.log(league);
+    res.status(200).json({
+      success: true,
+      data: league,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

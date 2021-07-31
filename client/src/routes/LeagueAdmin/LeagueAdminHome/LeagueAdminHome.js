@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LeagueAdminHome({}) {
+export default function LeagueAdminHome() {
   const [progress, setProgress] = useState(true);
   const [leagues, setLeagues] = useState([]);
   const classes = useStyles();
