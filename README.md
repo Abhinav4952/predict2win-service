@@ -1,8 +1,8 @@
-## **Predict2Win Service:-** 
+## **Predict2Win Application:-** 
 
  
 
-Predict2Win provides Scalable web Application to allow users to predict to questions which allow users to participate in a collaborative platform which can be like a social gaming .It mainly contain 3 types of users:- 
+Predict2Win provides  Web Application to allow users to predict to questions which allow users to participate in a collaborative platform which can be like a social gaming .It mainly contain 3 types of users:- 
 
 - Admin:- He can control the state of league admin and list all the active leagues and view league dashboards. Can approve or reject leagues. 
 
