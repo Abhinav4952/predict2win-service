@@ -4,6 +4,7 @@ import { Grid, LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Api from '../../../api/Api';
 import LeagueDetails from './LeagueDetails/LeagueDetails';
+import LeagueAdminApi from '../../../api/LeagueAdminApi';
 
 const useStyles = makeStyles({
   gridContainer: {
@@ -16,12 +17,6 @@ export default function LeagueAdminHome() {
   const [leagues, setLeagues] = useState([]);
   const classes = useStyles();
 
-  const getAPIConfiguration = () => {
-    return {
-      url: '/api/v1/leagueAdmin/getLeagues',
-    };
-  };
-
   const getCurrentUserLeague = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -31,7 +26,7 @@ export default function LeagueAdminHome() {
       }
       const user = jwt(token);
       console.log('fecthed user', user);
-      const leagueDetails = await Api.performRequest(getAPIConfiguration());
+      const leagueDetails = await Api.performRequest(LeagueAdminApi.getLeagues());
       setLeagues(leagueDetails?.data || []);
       setTimeout(() => setProgress(false), 500);
     } catch (err) {

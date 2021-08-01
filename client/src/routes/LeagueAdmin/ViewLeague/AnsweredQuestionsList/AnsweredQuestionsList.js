@@ -1,9 +1,10 @@
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Box, CircularProgress, Grid, Paper, Typography } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../../api/Api';
 import { green } from '@material-ui/core/colors';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import LeagueAdminApi from '../../../../api/LeagueAdminApi';
 
 export default function AnsweredQuestionsList() {
   const [progress, setProgress] = useState(false);
@@ -15,16 +16,10 @@ export default function AnsweredQuestionsList() {
     return new Array(numGroups).fill('').map((_, i) => arr.slice(i * perGroup, (i + 1) * perGroup));
   };
 
-  const getAPIConfiguration = leagueId => {
-    return {
-      url: `/api/v1/leagueAdmin/getQuestionsByLeague/${leagueId}`,
-    };
-  };
-
   const getQuestionsByLeagueId = async () => {
     try {
       setProgress(true);
-      const questions = await Api.performRequest(getAPIConfiguration(params.leagueId));
+      const questions = await Api.performRequest(LeagueAdminApi.getQuestionByLeagueId(params.leagueId));
       console.log(questions?.data);
       const updatedQuestions = questions?.data.map(ele => {
         const { name, options, correctAnswer } = ele;
@@ -34,6 +29,7 @@ export default function AnsweredQuestionsList() {
       setCurrentQuestions(updatedQuestions);
       setProgress(false);
     } catch (err) {
+      setProgress(false);
       console.log(err);
     }
   };
@@ -78,5 +74,13 @@ export default function AnsweredQuestionsList() {
     </Grid>
   );
 
-  return !progress && leagueQuestions.length ? currentQuestionsContainer : null;
+  const progressContainer = (
+    <div className="d-flex justify-content-center align-items-center align-content-center" style={{ height: '330px' }}>
+      <Box>
+        <CircularProgress />
+      </Box>
+    </div>
+  );
+
+  return !progress && leagueQuestions.length ? currentQuestionsContainer : progressContainer;
 }

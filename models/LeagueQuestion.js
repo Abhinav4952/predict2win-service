@@ -10,7 +10,7 @@ const LeagueQuestionSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Please league name'],
-    unique: true
+    unique: false
   },
   leagueId: {
     type: mongoose.Schema.Types.ObjectId,
