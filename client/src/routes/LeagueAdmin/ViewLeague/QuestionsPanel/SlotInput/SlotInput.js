@@ -16,13 +16,13 @@ export default function SlotInput({ open, handleClose, handleSubmit }) {
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">League Slots</DialogTitle>
       <DialogContent>
-        <DialogContentText>Fill number slots applicable for this league.</DialogContentText>
+        <DialogContentText>Fill number of slots open for this league.</DialogContentText>
         <TextField
           fullWidth
-          label="Correct Answer Value"
-          name="correctValue"
+          label="Slots"
+          name="slots"
           type="number"
-          placeholder="Correct Answer Value"
+          placeholder="Slots"
           onChange={e => setSlots(e.target.value)}
           margin="normal"
           required

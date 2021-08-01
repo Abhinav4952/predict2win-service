@@ -15,32 +15,13 @@ import SaveIcon from '@material-ui/icons/Save';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../../api/Api';
+import LeagueAdminApi from '../../../../api/LeagueAdminApi';
 
 export default function QuestionsList({ onSave }) {
   const params = useParams();
   const [progress, setProgress] = useState(false);
   const [leagueQuestions, setCurrentQuestions] = useState([]);
   const [submitDisable, setsubmitDisable] = useState(false);
-
-  const getAPIConfiguration = leagueId => {
-    return {
-      url: `/api/v1/leagueAdmin/getQuestionsByLeague/${leagueId}`,
-    };
-  };
-
-  const getLeagueById = leagueId => {
-    return {
-      url: `/api/v1/leagueAdmin/getLeagueById/${leagueId}`,
-    };
-  };
-
-  const submitAnswers = ({ leagueId, questionAnswers }) => {
-    return {
-      url: '/api/v1/leagueAdmin/updateAnswer',
-      options: { method: 'POST' },
-      payload: { leagueId, questionAnswers },
-    };
-  };
 
   const createGroups = (arr, numGroups = 2) => {
     const perGroup = Math.ceil(arr.length / numGroups);
@@ -52,7 +33,7 @@ export default function QuestionsList({ onSave }) {
   const getQuestionsByLeagueId = async () => {
     try {
       setProgress(true);
-      const questions = await Api.performRequest(getAPIConfiguration(params.leagueId));
+      const questions = await Api.performRequest(LeagueAdminApi.getQuestionByLeagueId(params.leagueId));
       console.log(questions?.data);
       if (!questions?.data.length) {
         setCurrentQuestions(questions?.data);
@@ -85,13 +66,13 @@ export default function QuestionsList({ onSave }) {
           optionValue: formValues[ele],
         };
       });
-      const submitRequest = submitAnswers({
+      const submitRequest = LeagueAdminApi.submitAnswersforLeague({
         leagueId: params.leagueId,
         questionAnswers: updatedAnswers,
       });
       console.log('submitRequest', submitRequest);
       await Api.performRequest(submitRequest);
-      const leagueData = await Api.performRequest(getLeagueById(params.leagueId));
+      const leagueData = await Api.performRequest(LeagueAdminApi.getLeagueById(params.leagueId));
       onSave(leagueData?.data);
     } catch (err) {
       setsubmitDisable(false);

@@ -2,6 +2,7 @@ import { Box, Grid, Container, Paper, CircularProgress } from '@material-ui/core
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../api/Api';
+import LeagueAdminApi from '../../../api/LeagueAdminApi';
 import LeagueStatus from '../../../helpers/enums/LeagueStatus';
 import AnsweredQuestionsList from './AnsweredQuestionsList/AnsweredQuestionsList';
 import LeagueInfo from './LeagueInfo/LeagueInfo';
@@ -15,16 +16,10 @@ export default function ViewLeague({}) {
   const [progress, setProgress] = useState(false);
   const [leagueDetails, setleagueDetails] = useState();
 
-  const getAPIConfiguration = leagueId => {
-    return {
-      url: `/api/v1/leagueAdmin/getLeagueById/${leagueId}`,
-    };
-  };
-
   const getLeagueById = async () => {
     try {
       setProgress(true);
-      const leagueDetails = await Api.performRequest(getAPIConfiguration(params.leagueId));
+      const leagueDetails = await Api.performRequest(LeagueAdminApi.getLeagueById(params.leagueId));
       console.log(leagueDetails?.data);
       setleagueDetails(leagueDetails?.data);
       setProgress(false);

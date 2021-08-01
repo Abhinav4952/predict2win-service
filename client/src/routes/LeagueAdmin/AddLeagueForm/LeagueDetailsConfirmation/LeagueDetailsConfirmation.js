@@ -9,6 +9,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import './LeagueDetailsConfirmation.css';
 import { useEffect, useState } from 'react';
 import Api from '../../../../api/Api';
+import LeagueAdminApi from '../../../../api/LeagueAdminApi';
 
 export default function LeagueDetailsConfirmation({
   handleNext,
@@ -30,14 +31,6 @@ export default function LeagueDetailsConfirmation({
     setUser(user);
   };
 
-  const getAPIConfiguration = formData => {
-    return {
-      url: '/api/v1/leagueAdmin/addLeague',
-      options: { method: 'POST' },
-      payload: formData,
-    };
-  };
-
   const handleSubmit = async () => {
     try {
       setProgress(true);
@@ -48,7 +41,7 @@ export default function LeagueDetailsConfirmation({
       formData.append('description', leagueDescription);
       formData.append('leagueCategory', leagueCategory);
       formData.append('expiryDate', new Date(endTime).toISOString());
-      const privateRequest = await Api.performRequest(getAPIConfiguration(formData));
+      const privateRequest = await Api.performRequest(LeagueAdminApi.addLeague(formData));
       console.log(privateRequest);
       handleNext();
     } catch (err) {

@@ -6,6 +6,7 @@ import { Paper } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { useState } from 'react';
 import Api from '../../../api/Api';
+import LeagueAdminApi from '../../../api/LeagueAdminApi';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,13 +30,6 @@ export default function AddLeague({}) {
     setLeagueImage(files);
   };
 
-  const getAPIConfiguration = formData => {
-    return {
-      url: '/api/v1/leagueAdmin/addLeague',
-      options: { method: 'POST' },
-      payload: formData,
-    };
-  };
   const arrayBufferToBase64 = buffer => {
     var binary = '';
     var bytes = new Uint8Array(buffer);
@@ -54,9 +48,7 @@ export default function AddLeague({}) {
     formData.append('description', 'Test League de');
     formData.append('leagueCategory', 'CRICKET');
     formData.append('expiryDate', '2021-10-15T00:00:00.000Z');
-    console.log('form data', formData.entries(), getAPIConfiguration(formData));
-    const privateRequest = await Api.performRequest(getAPIConfiguration(formData));
-    console.log(privateRequest, privateRequest?.data?.image?.data?.data);
+    const privateRequest = await Api.performRequest(LeagueAdminApi.addLeague(formData));
     console.log(arrayBufferToBase64(privateRequest?.data?.image?.data?.data));
     setLeagueSucess(privateRequest?.data);
   };

@@ -6,6 +6,7 @@ import CurrentQuestions from './CurrentQuestions/CurrentQuestions';
 import Api from '../../../../api/Api';
 import { useParams } from 'react-router-dom';
 import SlotInput from './SlotInput/SlotInput';
+import LeagueAdminApi from '../../../../api/LeagueAdminApi';
 
 export default function QuestionsPanel({ onStartLeague }) {
   const [addQuestion, setAddQuestion] = useState(false);
@@ -15,34 +16,6 @@ export default function QuestionsPanel({ onStartLeague }) {
   const [slots, setSlotsInput] = useState(false);
 
   const params = useParams();
-
-  const getAPIConfiguration = leagueId => {
-    return {
-      url: `/api/v1/leagueAdmin/getQuestionsByLeague/${leagueId}`,
-    };
-  };
-
-  const addQuestionConfiguration = ({ leagueId, name, options, questionType, correctAnswerValue }) => {
-    return {
-      url: '/api/v1/leagueAdmin/addQuestion',
-      options: { method: 'POST' },
-      payload: { leagueId, name, options, questionType, correctAnswerValue },
-    };
-  };
-
-  const startLeagueConfiguration = ({ leagueId, slots }) => {
-    return {
-      url: '/api/v1/leagueAdmin/startLeague',
-      options: { method: 'POST' },
-      payload: { leagueId, slots },
-    };
-  };
-
-  const getLeagueById = leagueId => {
-    return {
-      url: `/api/v1/leagueAdmin/getLeagueById/${leagueId}`,
-    };
-  };
 
   const progressContainer = (
     <div className="d-flex justify-content-center align-items-center align-content-center" style={{ height: '330px' }}>
@@ -66,10 +39,10 @@ export default function QuestionsPanel({ onStartLeague }) {
     try {
       setSlotsInput(false);
 
-      const request = startLeagueConfiguration({ leagueId: params.leagueId, slots: Number(slotsVal) });
+      const request = LeagueAdminApi.startLeague({ leagueId: params.leagueId, slots: Number(slotsVal) });
       await Api.performRequest(request);
 
-      const league = await Api.performRequest(getLeagueById(params.leagueId));
+      const league = await Api.performRequest(LeagueAdminApi.getLeagueById(params.leagueId));
       onStartLeague(league?.data);
     } catch (err) {
       setdisableStartLeague(false);
@@ -80,7 +53,7 @@ export default function QuestionsPanel({ onStartLeague }) {
   const getQuestionsByLeagueId = async () => {
     try {
       setProgress(true);
-      const questions = await Api.performRequest(getAPIConfiguration(params.leagueId));
+      const questions = await Api.performRequest(LeagueAdminApi.getQuestionByLeagueId(params.leagueId));
       console.log(questions?.data);
       setCurrentQuestions(questions?.data);
       setProgress(false);
@@ -94,7 +67,7 @@ export default function QuestionsPanel({ onStartLeague }) {
       const optionsList = Object.values(res.options).map(ele => {
         return { optionValue: ele };
       });
-      const addQuestionsRequest = addQuestionConfiguration({
+      const addQuestionsRequest = LeagueAdminApi.addQuestion({
         name: res.question,
         leagueId: params.leagueId,
         options: optionsList,
