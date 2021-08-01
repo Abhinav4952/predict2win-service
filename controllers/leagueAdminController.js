@@ -369,6 +369,29 @@ exports.getCurretUserLeague = async (req, res, next) => {
     const userDetails = req.user;
     console.log(userDetails._id);
     // const leagues = await League.find({ userId: userDetails._id }, {__v:0});
+
+    // const updatedLeague = await League.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: 'users',
+    //       localField: 'userId',
+    //       foreignField: '_id',
+    //       as: 'userDetails',
+    //     },
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: '$userDetails',
+    //       preserveNullAndEmptyArrays: true,
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       __v: 0,
+    //       'userDetails.__v': 0,
+    //     },
+    //   },
+    // ]);
     const leagues = await League.aggregate([
       {
         $match: {
