@@ -52,10 +52,21 @@ exports.getLeaguesforUser = async (req, res, next) => {
         },
       },
       {
+        $unwind: {
+          path: '$participationStatus',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           __v: 0,
           userId: 0,
           updated: 0,
+          'participationStatus.updated': 0,
+          'participationStatus.leagueId': 0,
+          'participationStatus.userId': 0,
+          'participationStatus.__v': 0,
+          'participationStatus.questionsAnswered': 0,
         },
       },
     ]);
