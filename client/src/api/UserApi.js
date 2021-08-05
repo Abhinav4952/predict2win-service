@@ -7,4 +7,16 @@ export default {
       url: `${BASE}/leagues`,
     };
   },
+
+  getLeagueById(leagueId) {
+    return {
+      url: `${BASE}/getLeagueById/${leagueId}`,
+    };
+  },
+
+  getQuestionsLeagueById(leagueId) {
+    return {
+      url: `${BASE}/getQuestionsByLeagueId/${leagueId}`,
+    };
+  },
 };

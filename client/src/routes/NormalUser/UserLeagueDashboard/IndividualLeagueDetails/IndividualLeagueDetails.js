@@ -15,12 +15,11 @@ export default function IndividualLeagueDetails({ name, description, _id, image,
   const viewDetails = () => history.push(`/view-league/${_id}`);
 
   const getRegisteredMessage = () => {
-    if(participationStatus?.userParticipationStatus === UserParticipationStatus.Registered){
-      return "Registered";
+    if (participationStatus?.userParticipationStatus === UserParticipationStatus.Registered) {
+      return 'Registered';
     }
     return;
-
-  }
+  };
 
   return (
     <Card>
@@ -42,13 +41,15 @@ export default function IndividualLeagueDetails({ name, description, _id, image,
         </CardContent>
       </CardActionArea>
       <CardActions className="d-flex justify-content-end w-100">
-        <Button size="small" variant="outlined" color="primary">
+        <Button size="small" variant="outlined" color="primary" onClick={viewDetails}>
           View Details
         </Button>
 
-        {leagueStatus === LeagueStatus.RegistrationOpen ? (<Button size="small" variant="outlined" color="primary" disabled={getRegisteredMessage()}>
-          {getRegisteredMessage() || "Register"}
-        </Button>): null}
+        {leagueStatus === LeagueStatus.RegistrationOpen ? (
+          <Button size="small" variant="outlined" color="primary" disabled={getRegisteredMessage()}>
+            {getRegisteredMessage() || 'Register'}
+          </Button>
+        ) : null}
       </CardActions>
     </Card>
   );

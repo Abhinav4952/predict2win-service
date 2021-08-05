@@ -121,7 +121,7 @@ exports.getLeagueById = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: league,
+      data: league[0],
     });
   } catch (err) {
     next(err);
@@ -211,6 +211,46 @@ exports.registerForLeague = async (req, res, next) => {
     res.status(201).json({
       success: true,
       data: userParticipationDetails,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getQuestionByLeague = async (req, res, next) => {
+  try {
+    const { leagueId } = req.params;
+
+    const schema = Joi.object({
+      leagueId: Joi.string().required(),
+    });
+
+    // schema options
+    const schemaOptions = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.params, schemaOptions);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    //TODO : Add more validations when to retireve league quuestions
+
+    const leagueQuestions = await LeagueQuestion.find({ leagueId }, { __v: 0 });
+
+    res.status(200).json({
+      success: true,
+      data: leagueQuestions,
     });
   } catch (err) {
     next(err);

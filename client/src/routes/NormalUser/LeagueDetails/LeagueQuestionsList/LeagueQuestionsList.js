@@ -1,15 +1,16 @@
-import { Grid, Button, Box, CircularProgress } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+import { Box, Button, CircularProgress, Grid } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../../api/Api';
-import LeagueAdminApi from '../../../../api/LeagueAdminApi';
+import UserApi from '../../../../api/UserApi';
 import Questions from '../../../../components/lib/Questions/Questions';
+import SaveIcon from '@material-ui/icons/Save';
 
-export default function QuestionsList({ onSave }) {
+export default function LeagueQuestionsList() {
   const params = useParams();
   const [progress, setProgress] = useState(false);
   const [leagueQuestions, setCurrentQuestions] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [submitDisable, setsubmitDisable] = useState(false);
 
   const createGroups = (arr, numGroups = 2) => {
@@ -17,12 +18,13 @@ export default function QuestionsList({ onSave }) {
     return new Array(numGroups).fill('').map((_, i) => arr.slice(i * perGroup, (i + 1) * perGroup));
   };
 
+  // eslint-disable-next-line no-unused-vars
   const [formValues, setFormValues] = useState();
 
   const getQuestionsByLeagueId = async () => {
     try {
       setProgress(true);
-      const questions = await Api.performRequest(LeagueAdminApi.getQuestionByLeagueId(params.leagueId));
+      const questions = await Api.performRequest(UserApi.getQuestionsLeagueById(params.leagueId));
       console.log(questions?.data);
       if (!questions?.data.length) {
         setCurrentQuestions(questions?.data);
@@ -42,29 +44,6 @@ export default function QuestionsList({ onSave }) {
       setCurrentQuestions(updatedQuestions);
       setProgress(false);
     } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const onSubmit = async () => {
-    try {
-      setsubmitDisable(true);
-      const updatedAnswers = Object.keys(formValues).map(ele => {
-        return {
-          questionId: ele,
-          optionValue: formValues[ele],
-        };
-      });
-      const submitRequest = LeagueAdminApi.submitAnswersforLeague({
-        leagueId: params.leagueId,
-        questionAnswers: updatedAnswers,
-      });
-      console.log('submitRequest', submitRequest);
-      await Api.performRequest(submitRequest);
-      const leagueData = await Api.performRequest(LeagueAdminApi.getLeagueById(params.leagueId));
-      onSave(leagueData?.data);
-    } catch (err) {
-      setsubmitDisable(false);
       console.log(err);
     }
   };
@@ -106,7 +85,6 @@ export default function QuestionsList({ onSave }) {
             size="large"
             startIcon={<SaveIcon />}
             disabled={!leagueQuestions.length || submitDisable}
-            onClick={() => onSubmit()}
           >
             Submit
           </Button>
