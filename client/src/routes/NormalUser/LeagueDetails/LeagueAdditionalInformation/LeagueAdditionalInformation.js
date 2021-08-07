@@ -41,8 +41,6 @@ export default function LeagueAdditionalInformation({
           <ListItemText primary="Host" secondary={`${userDetails?.firstName} ${userDetails?.lastName}` || '-'} />
         </ListItem>
       ) : null}
-
-      <Divider />
     </List>
   );
 }

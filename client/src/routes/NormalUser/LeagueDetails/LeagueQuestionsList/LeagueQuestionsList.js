@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Grid } from '@material-ui/core';
+import { Box, Button, CircularProgress, Grid, LinearProgress } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../../api/Api';
@@ -6,11 +6,10 @@ import UserApi from '../../../../api/UserApi';
 import Questions from '../../../../components/lib/Questions/Questions';
 import SaveIcon from '@material-ui/icons/Save';
 
-export default function LeagueQuestionsList() {
+export default function LeagueQuestionsList({ participationId, updateLeagueDetails }) {
   const params = useParams();
   const [progress, setProgress] = useState(false);
   const [leagueQuestions, setCurrentQuestions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [submitDisable, setsubmitDisable] = useState(false);
 
   const createGroups = (arr, numGroups = 2) => {
@@ -18,7 +17,6 @@ export default function LeagueQuestionsList() {
     return new Array(numGroups).fill('').map((_, i) => arr.slice(i * perGroup, (i + 1) * perGroup));
   };
 
-  // eslint-disable-next-line no-unused-vars
   const [formValues, setFormValues] = useState();
 
   const getQuestionsByLeagueId = async () => {
@@ -31,7 +29,6 @@ export default function LeagueQuestionsList() {
         return;
       }
       const updatedQuestions = questions?.data.map(ele => {
-        console.log(ele);
         const { name, options, _id } = ele;
         const updatedOptions = Object.values(options).map(e => e.optionValue);
         return {
@@ -40,7 +37,6 @@ export default function LeagueQuestionsList() {
           options: createGroups(updatedOptions, 2),
         };
       });
-      console.log(updatedQuestions);
       setCurrentQuestions(updatedQuestions);
       setProgress(false);
     } catch (err) {
@@ -48,8 +44,33 @@ export default function LeagueQuestionsList() {
     }
   };
 
+  const submitAnswers = async () => {
+    try {
+      console.log(formValues);
+      setsubmitDisable(true);
+      const questionsAnswered = Object.keys(formValues).map(ele => {
+        return {
+          questionId: ele,
+          option: formValues[ele],
+        };
+      });
+      const updateAnswersRequest = UserApi.submitAnswers({
+        questionsAnswered,
+        participationId,
+        leagueId: params.leagueId,
+      });
+      const updateAnswerResponse = await Api.performRequest(updateAnswersRequest);
+      console.log(updateAnswerResponse);
+      const laegueRequest = UserApi.getLeagueById(params.leagueId);
+      const leagueDetail = await Api.performRequest(laegueRequest);
+      updateLeagueDetails(leagueDetail?.data);
+    } catch (err) {
+      setsubmitDisable(false);
+      console.log(err);
+    }
+  };
+
   const handleChange = e => {
-    console.log(e.target);
     const { name, value } = e.target;
 
     // Set values
@@ -84,10 +105,12 @@ export default function LeagueQuestionsList() {
             color="primary"
             size="large"
             startIcon={<SaveIcon />}
+            onClick={submitAnswers}
             disabled={!leagueQuestions.length || submitDisable}
           >
             Submit
           </Button>
+          {submitDisable ? <LinearProgress /> : null}
         </Grid>
       </Grid>
     </Grid>

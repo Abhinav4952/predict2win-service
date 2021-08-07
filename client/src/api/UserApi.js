@@ -19,4 +19,35 @@ export default {
       url: `${BASE}/getQuestionsByLeagueId/${leagueId}`,
     };
   },
+
+  getAnsweredQuestionsByParticipationId(participationId) {
+    return {
+      url: `${BASE}/getQuestionDetails/${participationId}`,
+    };
+  },
+
+  getAnswersByParticipationId(participationId) {
+    return {
+      url: `${BASE}/getAnswersByParticipation/${participationId}`,
+    };
+  },
+
+  register({ userId, leagueId }) {
+    return {
+      url: `${BASE}/register/${leagueId}`,
+      options: { method: 'POST' },
+      payload: { userId },
+    };
+  },
+
+  submitAnswers({ questionsAnswered, leagueId, participationId }) {
+    return {
+      url: `${BASE}/updateAnswers/${participationId}`,
+      options: { method: 'POST' },
+      payload: {
+        questionsAnswered,
+        leagueId,
+      },
+    };
+  },
 };

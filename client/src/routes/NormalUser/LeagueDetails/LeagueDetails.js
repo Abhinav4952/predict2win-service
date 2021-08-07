@@ -11,11 +11,26 @@ import UserAnsweredLeagueQuestions from './UserAnsweredLeagueQuestions/UserAnswe
 import './LeagueDetails.css';
 import LeagueAnswers from './LeagueAnswers/LeagueAnswers';
 import LeagueUserDashboard from '../../LeagueAdmin/ViewLeague/LeagueUserDashboard/LeagueUserDashboard';
+import LeagueStatus from '../../../helpers/enums/LeagueStatus';
+import UserParticipationStatus from '../../../helpers/enums/UserParticipationStatus';
 
 export default function LeagueDetails() {
   const params = useParams();
   const [progress, setProgress] = useState(false);
   const [leagueDetails, setleagueDetails] = useState();
+
+  const availableLeagueStatus = [
+    LeagueStatus.RegistrationOpen,
+    LeagueStatus.Created,
+    LeagueStatus.RegistrationClosed,
+    LeagueStatus.InProgress,
+    LeagueStatus.Expired,
+  ];
+
+  const defaultUserParticipationStatus = [
+    UserParticipationStatus.Registered,
+    UserParticipationStatus.QuestionsAnswered,
+  ];
 
   const progressContainer = (
     <div className="d-flex justify-content-center align-items-center align-content-center" style={{ height: '330px' }}>
@@ -35,6 +50,40 @@ export default function LeagueDetails() {
     } catch (err) {
       console.log(err);
       setProgress(false);
+    }
+  };
+
+  const getQuestionsContainer = () => {
+    if (
+      defaultUserParticipationStatus.includes(leagueDetails?.participationStatus?.userParticipationStatus) &&
+      leagueDetails?.leagueStatus === LeagueStatus.RegistrationClosed
+    ) {
+      return <LeagueAnswers participationId={leagueDetails?.participationStatus?._id} />;
+    }
+    switch (leagueDetails?.participationStatus?.userParticipationStatus) {
+      case UserParticipationStatus.QuestionsAnswered:
+        return <UserAnsweredLeagueQuestions participationId={leagueDetails?.participationStatus?._id} />;
+      case UserParticipationStatus.Registered:
+        return (
+          <LeagueQuestionsList
+            participationId={leagueDetails?.participationStatus?._id}
+            updateLeagueDetails={data => setleagueDetails(data)}
+          />
+        );
+      default:
+        console.log('coming here');
+        return (
+          <div
+            className="d-flex justify-content-center align-items-center align-content-center"
+            style={{ height: '330px' }}
+          >
+            <Box>
+              <Typography variant="body1" gutterBottom>
+                Questions not available
+              </Typography>
+            </Box>
+          </div>
+        );
     }
   };
 
@@ -61,26 +110,31 @@ export default function LeagueDetails() {
             <LeagueTitle {...leagueDetails} />
           </Paper>
         </Grid>
-        <Grid item xs={12} md={12} lg={12} className="w-100 p-0 my-2">
+        <Grid item xs={12} md={12} lg={12} className="w-100 p-0">
           <Grid container spacing={3} className="w-100 m-0" justifyContent="space-between" direction="row">
             <Grid item xs={12} md={6} lg={6}>
-              <Paper className="px-3 py-3 w-100">
-                <Typography variant="h6" gutterBottom>
-                  League Additional Information
-                </Typography>
-                <LeagueAdditionalInformation {...leagueDetails} />
-              </Paper>
+              <Grid container spacing={2} direction="column">
+                <Grid item xs={12} md={12} lg={12}>
+                  <Paper className="px-3 py-3 w-100">
+                    <Typography variant="h6" gutterBottom>
+                      League Additional Information
+                    </Typography>
+                    <LeagueAdditionalInformation {...leagueDetails} />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                  <Paper elevation={'3'} className="p-3">
+                    <LeagueUserDashboard />
+                  </Paper>
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <Paper className="px-3 py-3 w-100">
+                {availableLeagueStatus.includes(leagueDetails?.leagueStatus) ? getQuestionsContainer() : null}
                 {/* <LeagueQuestionsList /> */}
                 {/* <UserAnsweredLeagueQuestions /> */}
-                <LeagueAnswers />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={6} lg={6}>
-              <Paper elevation={'3'} className="p-3">
-                <LeagueUserDashboard />
+                {/* <LeagueAnswers /> */}
               </Paper>
             </Grid>
           </Grid>

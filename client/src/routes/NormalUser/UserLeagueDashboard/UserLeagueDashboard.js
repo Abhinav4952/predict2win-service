@@ -8,6 +8,7 @@ import IndividualLeagueDetails from './IndividualLeagueDetails/IndividualLeagueD
 const useStyles = makeStyles({
   gridContainer: {
     padding: '40px',
+    width: '100%',
   },
 });
 
@@ -31,7 +32,7 @@ export default function UserLeagueDashboard() {
   const getLeagueContainer = leagueDetails => {
     return leagueDetails.map(ele => (
       <Grid item xs={12} sm={6} md={4} style={{ maxWidth: '420px' }} key={ele?._id}>
-        <IndividualLeagueDetails {...ele} />
+        <IndividualLeagueDetails {...ele} updateLeagues={data => setLeagues(data)} />
       </Grid>
     ));
   };

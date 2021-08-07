@@ -83,6 +83,9 @@ exports.getLeagueById = async (req, res, next) => {
   try {
     const leagueId = req.params.leagueId;
 
+    const userDetails = req.user;
+    console.log(userDetails._id);
+
     const league = await League.aggregate([
       {
         $match: {
@@ -91,15 +94,32 @@ exports.getLeagueById = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'userDetails',
+          from: 'userparticipations',
+          let: {
+            id: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: ['$leagueId', '$$id'],
+                    },
+                    {
+                      $eq: ['$userId', mongoose.Types.ObjectId(userDetails._id)],
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'participationStatus',
         },
       },
       {
         $unwind: {
-          path: '$userDetails',
+          path: '$participationStatus',
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -107,13 +127,12 @@ exports.getLeagueById = async (req, res, next) => {
         $project: {
           __v: 0,
           userId: 0,
-          'userDetails.__v': 0,
-          'userDetails.password': 0,
-          'userDetails.userType': 0,
-          'userDetails.userStatus': 0,
-          'userDetails.updated': 0,
-          'userDetails.resetPasswordExpire': 0,
-          'userDetails.resetPasswordToken': 0,
+          updated: 0,
+          'participationStatus.updated': 0,
+          'participationStatus.leagueId': 0,
+          'participationStatus.userId': 0,
+          'participationStatus.__v': 0,
+          'participationStatus.questionsAnswered': 0,
         },
       },
     ]);
@@ -246,7 +265,7 @@ exports.getQuestionByLeague = async (req, res, next) => {
       return next(new ErrorResponse('League Not found', 404, 'Not found'));
     }
 
-    if (!league?.leagueStatus !== LeagueStatus.RegistrationOpen) {
+    if (league?.leagueStatus !== LeagueStatus.RegistrationOpen) {
       return next(new ErrorResponse('League not yet started', 404, 'Not found'));
     }
 
@@ -541,7 +560,7 @@ exports.getAnswersByParticipation = async (req, res, next) => {
                 options: 1,
                 correctAnswer: 1,
                 correctAnswerValue: 1,
-                wrongAnswerValue: 1
+                wrongAnswerValue: 1,
               },
             },
           ],
