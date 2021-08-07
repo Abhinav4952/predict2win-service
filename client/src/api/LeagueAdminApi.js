@@ -51,4 +51,10 @@ export default {
       payload: { leagueId, questionAnswers },
     };
   },
+
+  getParticipantsByLeagueId(leagueId) {
+    return {
+      url: `${BASE}/getParticipationsByLeagueId/${leagueId}`,
+    };
+  },
 };
