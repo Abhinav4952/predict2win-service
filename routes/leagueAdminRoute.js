@@ -32,5 +32,8 @@ router.route('/getQuestionsByLeague/:leagueId').get(leagueAdminProtect, getQuest
 router.route('/updateAnswer').post(leagueAdminProtect, updateAnswers);
 router.route('/startLeague').post(leagueAdminProtect, startLeague);
 router.route('/stopLeague').post(leagueAdminProtect, stopLeague);
+//API to fecth users registered for a league along with their user details
+//API to calculate user specific selceted answers
+
 
 module.exports = router;

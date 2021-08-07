@@ -6,8 +6,11 @@ import UserApi from '../../../api/UserApi';
 import LeagueAdditionalInformation from './LeagueAdditionalInformation/LeagueAdditionalInformation';
 import LeagueQuestionsList from './LeagueQuestionsList/LeagueQuestionsList';
 import LeagueTitle from './LeagueTitle/LeagueTitle';
+import UserAnsweredLeagueQuestions from './UserAnsweredLeagueQuestions/UserAnsweredLeagueQuestions';
 
 import './LeagueDetails.css';
+import LeagueAnswers from './LeagueAnswers/LeagueAnswers';
+import LeagueUserDashboard from '../../LeagueAdmin/ViewLeague/LeagueUserDashboard/LeagueUserDashboard';
 
 export default function LeagueDetails() {
   const params = useParams();
@@ -70,7 +73,14 @@ export default function LeagueDetails() {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <Paper className="px-3 py-3 w-100">
-                <LeagueQuestionsList />
+                {/* <LeagueQuestionsList /> */}
+                {/* <UserAnsweredLeagueQuestions /> */}
+                <LeagueAnswers />
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              <Paper elevation={'3'} className="p-3">
+                <LeagueUserDashboard />
               </Paper>
             </Grid>
           </Grid>
