@@ -112,6 +112,8 @@ exports.getLeagueById = async (req, res, next) => {
           'userDetails.userType': 0,
           'userDetails.userStatus': 0,
           'userDetails.updated': 0,
+          'userDetails.resetPasswordExpire': 0,
+          'userDetails.resetPasswordToken': 0,
         },
       },
     ]);
@@ -244,6 +246,10 @@ exports.getQuestionByLeague = async (req, res, next) => {
       return next(new ErrorResponse('League Not found', 404, 'Not found'));
     }
 
+    if (!league?.leagueStatus !== LeagueStatus.RegistrationOpen) {
+      return next(new ErrorResponse('League not yet started', 404, 'Not found'));
+    }
+
     //TODO : Add more validations when to retireve league quuestions
 
     const leagueQuestions = await LeagueQuestion.find({ leagueId }, { __v: 0 });
@@ -251,6 +257,329 @@ exports.getQuestionByLeague = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: leagueQuestions,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateAnswersForLeague = async (req, res, next) => {
+  try {
+    const { leagueId, questionsAnswered } = req.body;
+
+    const participationId = req.params.participationId;
+
+    if (!participationId) {
+      return next(new ErrorResponse('Participation ID is mandatory', 404, 'Not found'));
+    }
+
+    let questionOptions = Joi.object().keys({
+      questionId: Joi.string().required(),
+      option: Joi.string().required(),
+    });
+
+    const schema = Joi.object({
+      leagueId: Joi.string().required(),
+      questionsAnswered: Joi.array().items(questionOptions).min(1),
+    });
+    //TODO : Add more validations when to retireve league quuestions
+
+    // schema options
+    const schemaOptions = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.body, schemaOptions);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const leagueDetails = await League.findById(leagueId);
+
+    if (!leagueDetails) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    if ([LeagueStatus.RegistrationClosed, LeagueStatus.Expired].includes(leagueDetails?.leagueStatus)) {
+      return next(new ErrorResponse('League is no more accepting answers', 400, 'Bad Request'));
+    }
+
+    const participationDetails = await UserParticipation.findById(participationId);
+
+    console.log(participationDetails);
+
+    if (!participationDetails) {
+      return next(new ErrorResponse('Participation ID is mandatory', 404, 'Not found'));
+    }
+
+    if (`${participationDetails?.leagueId}` !== `${leagueDetails?._id}`) {
+      return next(new ErrorResponse('Invalid LeagueId', 400, 'Bad Request'));
+    }
+
+    await UserParticipation.findByIdAndUpdate(
+      participationId,
+      {
+        userParticipationStatus: UserParticipationStatus.QuestionsAnswered,
+        questionsAnswered,
+        updated: new Date().toISOString(),
+      },
+      { useFindAndModify: false },
+    );
+
+    res.status(200).json({
+      success: true,
+      data: 'Answers Updated successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getQuestionDetailsByParticipationId = async (req, res, next) => {
+  try {
+    const { participationId } = req.params;
+
+    const schema = Joi.object({
+      participationId: Joi.string().required(),
+    });
+
+    // schema options
+    const schemaOptions = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.params, schemaOptions);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const participationDetails = await UserParticipation.findById(participationId);
+
+    if (!participationDetails) {
+      return next(new ErrorResponse('Participation details not found', 404, 'Not found'));
+    }
+
+    if (!participationDetails?.questionsAnswered?.length) {
+      return next(new ErrorResponse('Questions not answered', 400));
+    }
+
+    const questionDetails = await UserParticipation.aggregate([
+      {
+        $match: {
+          $expr: {
+            $eq: ['$_id', mongoose.Types.ObjectId(participationId)],
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$questionsAnswered',
+        },
+      },
+      {
+        $lookup: {
+          from: 'leaguequestions',
+          let: {
+            itemId: {
+              $toObjectId: '$questionsAnswered.questionId',
+            },
+            items: '$questionsAnswered',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$itemId'],
+                },
+              },
+            },
+            {
+              $replaceRoot: {
+                newRoot: {
+                  $mergeObjects: ['$$items', '$$ROOT'],
+                },
+              },
+            },
+            {
+              $project: {
+                selectedOptions: '$option',
+                questionId: 1,
+                isAnswerUpdated: 1,
+                updated: 1,
+                name: 1,
+                questionType: 1,
+                options: 1,
+              },
+            },
+          ],
+          as: 'questionDetails',
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          userParticipationStatus: {
+            $first: '$userParticipationStatus',
+          },
+          leagueId: {
+            $first: '$leagueId',
+          },
+          userId: {
+            $first: '$userId',
+          },
+          questionDetails: {
+            $push: {
+              $first: '$questionDetails',
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          'questionDetails.wrongAnswerValue': 0,
+          'questionDetails.isDeleted': 0,
+          'questionDetails.correctAnswerValue': 0,
+          'questionDetails.created': 0,
+          'questionDetails.__v': 0,
+          'questionDetails.correctAnswer': 0,
+          'questionDetails.leagueId': 0,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: questionDetails,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAnswersByParticipation = async (req, res, next) => {
+  try {
+    const { participationId } = req.params;
+
+    const schema = Joi.object({
+      participationId: Joi.string().required(),
+    });
+
+    // schema options
+    const schemaOptions = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.params, schemaOptions);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const participationDetails = await UserParticipation.findById(participationId);
+
+    if (!participationDetails) {
+      return next(new ErrorResponse('Participation details not found', 404, 'Not found'));
+    }
+
+    if (!participationDetails?.questionsAnswered?.length) {
+      return next(new ErrorResponse('Questions not answered', 400));
+    }
+
+    const questionDetails = await UserParticipation.aggregate([
+      {
+        $match: {
+          $expr: {
+            $eq: ['$_id', mongoose.Types.ObjectId(participationId)],
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$questionsAnswered',
+        },
+      },
+      {
+        $lookup: {
+          from: 'leaguequestions',
+          let: {
+            itemId: {
+              $toObjectId: '$questionsAnswered.questionId',
+            },
+            items: '$questionsAnswered',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$itemId'],
+                },
+              },
+            },
+            {
+              $replaceRoot: {
+                newRoot: {
+                  $mergeObjects: ['$$items', '$$ROOT'],
+                },
+              },
+            },
+            {
+              $project: {
+                selectedOption: '$option',
+                questionId: 1,
+                isAnswerUpdated: 1,
+                updated: 1,
+                name: 1,
+                questionType: 1,
+                options: 1,
+                correctAnswer: 1,
+                correctAnswerValue: 1,
+                wrongAnswerValue: 1
+              },
+            },
+          ],
+          as: 'questionDetails',
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          userParticipationStatus: {
+            $first: '$userParticipationStatus',
+          },
+          leagueId: {
+            $first: '$leagueId',
+          },
+          userId: {
+            $first: '$userId',
+          },
+          questionDetails: {
+            $push: {
+              $first: '$questionDetails',
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          'questionDetails.isDeleted': 0,
+          'questionDetails.created': 0,
+          'questionDetails.__v': 0,
+          'questionDetails.leagueId': 0,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: questionDetails,
     });
   } catch (err) {
     next(err);

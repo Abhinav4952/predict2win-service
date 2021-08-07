@@ -10,6 +10,7 @@ const {
   startLeague,
   stopLeague,
   getQuestionByLeague,
+  getParticipationsByLeagueId,
 } = require('../controllers/leagueAdminController');
 const { leagueAdminProtect } = require('../middleware/auth');
 
@@ -32,7 +33,7 @@ router.route('/getQuestionsByLeague/:leagueId').get(leagueAdminProtect, getQuest
 router.route('/updateAnswer').post(leagueAdminProtect, updateAnswers);
 router.route('/startLeague').post(leagueAdminProtect, startLeague);
 router.route('/stopLeague').post(leagueAdminProtect, stopLeague);
-//API to fecth users registered for a league along with their user details
+router.route('/getParticipationsByLeagueId/:leagueId').get(leagueAdminProtect, getParticipationsByLeagueId);
 //API to calculate user specific selceted answers
 
 

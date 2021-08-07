@@ -6,6 +6,9 @@ const {
   getLeagueById,
   registerForLeague,
   getQuestionByLeague,
+  updateAnswersForLeague,
+  getQuestionDetailsByParticipationId,
+  getAnswersByParticipation
 } = require('../controllers/userController');
 const { protect } = require('../middleware/auth');
 
@@ -13,9 +16,9 @@ router.route('/leagues').get(protect, getLeaguesforUser);
 router.route('/getLeagueById/:leagueId').get(protect, getLeagueById);
 router.route('/register/:leagueId').post(protect, registerForLeague);
 router.route('/getQuestionsByLeagueId/:leagueId').get(protect, getQuestionByLeague);
+router.route('/updateAnswers/:participationId').post(protect, updateAnswersForLeague);
+router.route('/getQuestionDetails/:participationId').get(protect, getQuestionDetailsByParticipationId);
+router.route('/getAnswersByParticipation/:participationId').get(protect, getAnswersByParticipation);
 //Add more validation to above  API
-//API to answer user selected quetions
-// API to fetch questions with selected answer after user selects answers
-// API to fecth correct answers with selected answer
 
 module.exports = router;
