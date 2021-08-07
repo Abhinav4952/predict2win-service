@@ -11,6 +11,7 @@ const {
   stopLeague,
   getQuestionByLeague,
   getParticipationsByLeagueId,
+  getLeaderBoardByLeagueId,
 } = require('../controllers/leagueAdminController');
 const { leagueAdminProtect } = require('../middleware/auth');
 
@@ -34,6 +35,7 @@ router.route('/updateAnswer').post(leagueAdminProtect, updateAnswers);
 router.route('/startLeague').post(leagueAdminProtect, startLeague);
 router.route('/stopLeague').post(leagueAdminProtect, stopLeague);
 router.route('/getParticipationsByLeagueId/:leagueId').get(leagueAdminProtect, getParticipationsByLeagueId);
+router.route('/getLeaderBoardByLeagueId/:leagueId').get(leagueAdminProtect, getLeaderBoardByLeagueId);
 //API to calculate user specific selceted answers
 
 
