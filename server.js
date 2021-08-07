@@ -44,6 +44,7 @@ app.use('/api/v1/posts', postRoutes);
 app.use('/api/v1/auth', require('./routes/authRoute'));
 app.use('/api/v1/admin', require('./routes/adminRoute'));
 app.use('/api/v1/leagueAdmin', require('./routes/leagueAdminRoute'));
+app.use('/api/v1/user', require('./routes/userRoute'));
 app.use('/api/v1/private', require('./routes/private'));
 
 // Error Handler Middleware

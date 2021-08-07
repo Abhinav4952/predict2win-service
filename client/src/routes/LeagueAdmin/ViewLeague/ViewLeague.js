@@ -11,7 +11,7 @@ import LeagueUserDashboard from './LeagueUserDashboard/LeagueUserDashboard';
 import QuestionsList from './QuestionsList/QuestionsList';
 import QuestionsPanel from './QuestionsPanel/QuestionsPanel';
 
-export default function ViewLeague({}) {
+export default function ViewLeague() {
   const params = useParams();
   const [progress, setProgress] = useState(false);
   const [leagueDetails, setleagueDetails] = useState();

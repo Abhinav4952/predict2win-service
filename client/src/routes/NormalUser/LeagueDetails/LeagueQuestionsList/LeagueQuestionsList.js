@@ -1,12 +1,12 @@
-import { Grid, Button, Box, CircularProgress } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+import { Box, Button, CircularProgress, Grid, LinearProgress } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../../api/Api';
-import LeagueAdminApi from '../../../../api/LeagueAdminApi';
+import UserApi from '../../../../api/UserApi';
 import Questions from '../../../../components/lib/Questions/Questions';
+import SaveIcon from '@material-ui/icons/Save';
 
-export default function QuestionsList({ onSave }) {
+export default function LeagueQuestionsList({ participationId, updateLeagueDetails }) {
   const params = useParams();
   const [progress, setProgress] = useState(false);
   const [leagueQuestions, setCurrentQuestions] = useState([]);
@@ -22,14 +22,13 @@ export default function QuestionsList({ onSave }) {
   const getQuestionsByLeagueId = async () => {
     try {
       setProgress(true);
-      const questions = await Api.performRequest(LeagueAdminApi.getQuestionByLeagueId(params.leagueId));
+      const questions = await Api.performRequest(UserApi.getQuestionsLeagueById(params.leagueId));
       console.log(questions?.data);
       if (!questions?.data.length) {
         setCurrentQuestions(questions?.data);
         return;
       }
       const updatedQuestions = questions?.data.map(ele => {
-        console.log(ele);
         const { name, options, _id } = ele;
         const updatedOptions = Object.values(options).map(e => e.optionValue);
         return {
@@ -38,7 +37,6 @@ export default function QuestionsList({ onSave }) {
           options: createGroups(updatedOptions, 2),
         };
       });
-      console.log(updatedQuestions);
       setCurrentQuestions(updatedQuestions);
       setProgress(false);
     } catch (err) {
@@ -46,23 +44,26 @@ export default function QuestionsList({ onSave }) {
     }
   };
 
-  const onSubmit = async () => {
+  const submitAnswers = async () => {
     try {
+      console.log(formValues);
       setsubmitDisable(true);
-      const updatedAnswers = Object.keys(formValues).map(ele => {
+      const questionsAnswered = Object.keys(formValues).map(ele => {
         return {
           questionId: ele,
-          optionValue: formValues[ele],
+          option: formValues[ele],
         };
       });
-      const submitRequest = LeagueAdminApi.submitAnswersforLeague({
+      const updateAnswersRequest = UserApi.submitAnswers({
+        questionsAnswered,
+        participationId,
         leagueId: params.leagueId,
-        questionAnswers: updatedAnswers,
       });
-      console.log('submitRequest', submitRequest);
-      await Api.performRequest(submitRequest);
-      const leagueData = await Api.performRequest(LeagueAdminApi.getLeagueById(params.leagueId));
-      onSave(leagueData?.data);
+      const updateAnswerResponse = await Api.performRequest(updateAnswersRequest);
+      console.log(updateAnswerResponse);
+      const laegueRequest = UserApi.getLeagueById(params.leagueId);
+      const leagueDetail = await Api.performRequest(laegueRequest);
+      updateLeagueDetails(leagueDetail?.data);
     } catch (err) {
       setsubmitDisable(false);
       console.log(err);
@@ -70,7 +71,6 @@ export default function QuestionsList({ onSave }) {
   };
 
   const handleChange = e => {
-    console.log(e.target);
     const { name, value } = e.target;
 
     // Set values
@@ -105,11 +105,12 @@ export default function QuestionsList({ onSave }) {
             color="primary"
             size="large"
             startIcon={<SaveIcon />}
+            onClick={submitAnswers}
             disabled={!leagueQuestions.length || submitDisable}
-            onClick={() => onSubmit()}
           >
             Submit
           </Button>
+          {submitDisable ? <LinearProgress /> : null}
         </Grid>
       </Grid>
     </Grid>

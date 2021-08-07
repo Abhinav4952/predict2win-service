@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const LeagueQuestionType = require('../helpers/enums/LeagueQuestionType');
 var moment = require('moment');
 const LeagueQuestion = require('../models/LeagueQuestion');
+const UserParticipation = require('../models/UserParticipation');
 
 exports.addLeague = async (req, res, next) => {
   try {
@@ -235,7 +236,6 @@ exports.startLeague = async (req, res, next) => {
       return next(new ErrorResponse('League Expired', 400, 'ValidationError'));
     }
 
-
     await League.findByIdAndUpdate(leagueId, {
       leagueStatus: LeagueStatus.RegistrationOpen,
       slots,
@@ -369,6 +369,29 @@ exports.getCurretUserLeague = async (req, res, next) => {
     const userDetails = req.user;
     console.log(userDetails._id);
     // const leagues = await League.find({ userId: userDetails._id }, {__v:0});
+
+    // const updatedLeague = await League.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: 'users',
+    //       localField: 'userId',
+    //       foreignField: '_id',
+    //       as: 'userDetails',
+    //     },
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: '$userDetails',
+    //       preserveNullAndEmptyArrays: true,
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       __v: 0,
+    //       'userDetails.__v': 0,
+    //     },
+    //   },
+    // ]);
     const leagues = await League.aggregate([
       {
         $match: {
@@ -413,6 +436,65 @@ exports.getLeagueById = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: league,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getParticipationsByLeagueId = async (req, res, next) => {
+  try {
+    const leagueId = req.params.leagueId;
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    if (league?.userId.toString() !== req.user._id.toString()) {
+      return next(new ErrorResponse('UnAuthorized to view different users League', 401));
+    }
+
+    const participants = await UserParticipation.aggregate([
+      {
+        $match: {
+          leagueId: mongoose.Types.ObjectId(leagueId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $unwind: {
+          path: '$userDetails',
+          includeArrayIndex: 'string',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          __v: 0,
+          userId: 0,
+          'userDetails.__v': 0,
+          'userDetails.password': 0,
+          'userDetails.userType': 0,
+          'userDetails.userStatus': 0,
+          'userDetails.updated': 0,
+          'userDetails.resetPasswordExpire': 0,
+          'userDetails.resetPasswordToken': 0,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: participants,
     });
   } catch (err) {
     next(err);
