@@ -13,8 +13,7 @@ export default function LeagueAdminDetailConfirmation({
   handleNext,
   handleBack,
   values: { firstName, lastName, username, email },
-}){
-
+}) {
   const [error, setError] = useState();
   const [progress, setProgress] = useState(false);
   const vertical = 'bottom';
@@ -94,5 +93,4 @@ export default function LeagueAdminDetailConfirmation({
       </Snackbar>
     </>
   );
-
 }

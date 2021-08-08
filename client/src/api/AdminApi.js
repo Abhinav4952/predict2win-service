@@ -2,13 +2,11 @@
 const BASE = '/api/v1/admin';
 
 export default {
-
-  addLeagueAdmin({ firstName, lastName, email, username, }) {
+  addLeagueAdmin({ firstName, lastName, email, username }) {
     return {
       url: `${BASE}/addLeagueAdmin`,
       options: { method: 'POST' },
-      payload: { firstName, lastName, email, username, },
+      payload: { firstName, lastName, email, username },
     };
   },
-
 };

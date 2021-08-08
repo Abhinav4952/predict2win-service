@@ -1,9 +1,9 @@
-import { Box, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
-import { useState } from "react";
-import formValidation from "../../../../helpers/formValidation/formValidation";
-import LeagueAddSucess from "../../../LeagueAdmin/LeagueAddSucess/LeagueAddSucess";
-import LeagueAdminBasicDetails from "./LeagueAdminBasicDetails/LeagueAdminBasicDetails";
-import LeagueAdminDetailConfirmation from "./LeagueAdminDetailConfirmation/LeagueAdminDetailConfirmation";
+import { Box, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
+import { useState } from 'react';
+import formValidation from '../../../../helpers/formValidation/formValidation';
+import LeagueAddSucess from '../../../LeagueAdmin/LeagueAddSucess/LeagueAddSucess';
+import LeagueAdminBasicDetails from './LeagueAdminBasicDetails/LeagueAdminBasicDetails';
+import LeagueAdminDetailConfirmation from './LeagueAdminDetailConfirmation/LeagueAdminDetailConfirmation';
 
 // Step titles
 const labels = ['League Admin Details', 'Confirmation'];
@@ -42,14 +42,12 @@ const fieldsValidation = {
   },
 };
 
+export default function LeagueAdminBaseForm() {
+  const [activeStep, setActiveStep] = useState(0);
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
 
-export default function LeagueAdminBaseForm(){
-
-    const [activeStep, setActiveStep] = useState(0);
-    const [formValues, setFormValues] = useState(initialValues);
-    const [formErrors, setFormErrors] = useState({});
-
-     // Proceed to next step
+  // Proceed to next step
   const handleNext = () => setActiveStep(prev => prev + 1);
   // Go back to prev step
   const handleBack = () => setActiveStep(prev => prev - 1);
