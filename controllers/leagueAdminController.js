@@ -634,3 +634,36 @@ exports.getLeaderBoardByLeagueId = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getLeagueStats = async (req, res, next) => {
+  try {
+    const leagueId = req.params.leagueId;
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    if (league?.userId.toString() !== req.user._id.toString()) {
+      return next(new ErrorResponse('UnAuthorized to view different users League', 401));
+    }
+
+    const participants = await UserParticipation.find({ leagueId });
+
+    const dataDiff = moment(league?.expiryDate).diff(moment(), 'days');
+
+    const stats = {
+      slotsAvailable: league?.slots || 0,
+      slotsFilled: participants?.length || 0,
+      daysRemaining: dataDiff >= 0 ? dataDiff : 0
+    }
+
+    res.status(200).json({
+      success: true,
+      data: stats,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

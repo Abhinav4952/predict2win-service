@@ -7,6 +7,7 @@ import Api from '../../../../api/Api';
 import LeagueAdminApi from '../../../../api/LeagueAdminApi';
 import UserListBootstrap from './UserListBootstrap/UserListBootstrap';
 import ProgressContainer from '../../../../components/lib/ProgressContainer/ProgressContainer';
+import LeagueStatus from '../../../../helpers/enums/LeagueStatus';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -34,19 +35,29 @@ function a11yProps(index) {
   };
 }
 
-export default function LeagueUserDashboard() {
+export default function LeagueUserDashboard({ leagueStatus }) {
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const [progress, setProgress] = useState(true);
+  const [leaderBoardProgress, setleaderBoardProgresss] = useState(true);
+  // eslint-disable-next-line no-unused-vars
+  const [leaderBoardError, setleaderBoardError] = useState(true);
   // eslint-disable-next-line no-unused-vars
   const [error, seterror] = useState();
   const [participantsList, setparticipantsList] = useState([]);
+  const [leaderBoardList, setLeaderBoardList] = useState([]);
   const params = useParams();
 
   const participantsColData = [
     { dataField: 'id', text: 'S No', sort: true },
     { dataField: 'name', text: 'Name', sort: true },
     { dataField: 'registeredDate', text: 'Registered Date', sort: true },
+  ];
+
+  const leaderBoardColData = [
+    { dataField: 'rank', text: 'Position', sort: true },
+    { dataField: 'name', text: 'Name', sort: true },
+    { dataField: 'score', text: 'Score', sort: true },
   ];
 
   const handleChange = (event, newValue) => {
@@ -62,7 +73,6 @@ export default function LeagueUserDashboard() {
       setProgress(true);
       const participantsRequest = LeagueAdminApi.getParticipantsByLeagueId(params.leagueId);
       const participantsResponse = await Api.performRequest(participantsRequest);
-      console.log(participantsResponse?.data);
       if (!participantsResponse?.data.length) {
         setparticipantsList([]);
         setProgress(false);
@@ -75,7 +85,6 @@ export default function LeagueUserDashboard() {
           registeredDate: moment(ele?.created).format('MMM Do YYYY, h:mm a'),
         };
       });
-      console.log(updatedParticipantsList);
       setparticipantsList(updatedParticipantsList);
       setProgress(false);
     } catch (err) {
@@ -85,12 +94,41 @@ export default function LeagueUserDashboard() {
     }
   };
 
+  const getLeaderBoard = async () => {
+    try {
+      setleaderBoardProgresss(true);
+      const leaderBoardRequest = LeagueAdminApi.getLeaderBoardByLeagueId(params.leagueId);
+      const leaderBoardResponse = await Api.performRequest(leaderBoardRequest);
+      console.log(leaderBoardResponse);
+      if (!leaderBoardResponse?.data.length) {
+        setLeaderBoardList([]);
+        setleaderBoardProgresss(false);
+        return;
+      }
+      const updatedLeaderBoardList = leaderBoardResponse?.data.map((ele, index) => {
+        return {
+          rank: index + 1,
+          name: ele?.userDetails?.username,
+          score: ele?.result || 0,
+        };
+      });
+      console.log(updatedLeaderBoardList);
+      setLeaderBoardList(updatedLeaderBoardList);
+      setleaderBoardProgresss(false);
+    } catch (err) {
+      setleaderBoardError(err);
+      setleaderBoardProgresss(false);
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     getParticipantsList();
+    getLeaderBoard();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
+  const userListContainer = (
     <>
       <AppBar position="static" color="default">
         <Tabs
@@ -102,7 +140,7 @@ export default function LeagueUserDashboard() {
           aria-label="full width tabs example"
         >
           <Tab label="Participants" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="LeaderBoard" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
       <SwipeableViews
@@ -122,9 +160,26 @@ export default function LeagueUserDashboard() {
           </Grid>
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
-          Item Two
+          {!leaderBoardProgress && leaderBoardList.length ? (
+            <UserListBootstrap data={leaderBoardList} colData={leaderBoardColData} />
+          ) : (
+            <ProgressContainer />
+          )}
         </TabPanel>
       </SwipeableViews>
+      {leagueStatus}
     </>
   );
+
+  const leagueCreatedContainer = (
+    <div className="d-flex justify-content-center align-items-center" style={{ height: '330px' }}>
+      <Box>
+        <Typography variant="body1" gutterBottom>
+          League Registrations are not started
+        </Typography>
+      </Box>
+    </div>
+  );
+
+  return leagueStatus === LeagueStatus.Created ? leagueCreatedContainer : userListContainer;
 }

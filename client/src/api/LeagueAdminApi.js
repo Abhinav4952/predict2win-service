@@ -57,4 +57,16 @@ export default {
       url: `${BASE}/getParticipationsByLeagueId/${leagueId}`,
     };
   },
+
+  getLeaderBoardByLeagueId(leagueId) {
+    return {
+      url: `${BASE}/getLeaderBoardByLeagueId/${leagueId}`,
+    };
+  },
+
+  getLeaugeStats(leagueId) {
+    return {
+      url: `${BASE}/getLeagueStats/${leagueId}`,
+    };
+  },
 };
