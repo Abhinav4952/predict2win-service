@@ -22,7 +22,7 @@ const LeagueQuestionSchema = new mongoose.Schema({
   options: [optionSchema],
   correctAnswerValue: {type: Number, required: true},
   wrongAnswerValue: {type: Number, default: 0}, 
-  correctAnswer: {type: String, unique:false},
+  correctAnswer: {type: String, unique:false, default: 1},
   isAnswerUpdated: {type: Boolean, default: false},
   isDeleted: {type: Boolean, default: false},
   created: { type: String },

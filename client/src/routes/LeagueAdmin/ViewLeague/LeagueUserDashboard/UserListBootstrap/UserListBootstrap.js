@@ -60,10 +60,10 @@ const pagination = paginationFactory({
   },
 });
 
-export default function UserListBootstrap() {
+export default function UserListBootstrap({data = products, colData = columns }) {
   return (
     <div style={{ textAlign: 'center' }}>
-      <BootstrapTable bootstrap4 keyField="id" data={products} columns={columns} pagination={pagination} />
+      <BootstrapTable bootstrap4 keyField="id" data={data} columns={colData} pagination={pagination} />
     </div>
   );
 }

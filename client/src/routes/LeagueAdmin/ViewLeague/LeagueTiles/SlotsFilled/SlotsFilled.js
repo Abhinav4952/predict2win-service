@@ -25,15 +25,15 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
   backgroundImage: `linear-gradient(135deg, ${alpha('#007B55', 0)} 0%, ${alpha(`#007B55`, 0.24)} 100%)`,
 }));
 
-export default function SlotsFilled({}) {
+export default function SlotsFilled({data="0", text = "Tile Data Coming Soon", children }) {
   return (
     <RootStyle>
       <IconWrapperStyle>
-        <Icon icon={androidFilled} width={24} height={24} />
+        {children}
       </IconWrapperStyle>
-      <Typography variant="h3">74K</Typography>
+      <Typography variant="h3">{data}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        Slots filled
+        {text}
       </Typography>
     </RootStyle>
   );

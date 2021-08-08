@@ -23,13 +23,11 @@ export default function QuestionsList({ onSave }) {
     try {
       setProgress(true);
       const questions = await Api.performRequest(LeagueAdminApi.getQuestionByLeagueId(params.leagueId));
-      console.log(questions?.data);
       if (!questions?.data.length) {
         setCurrentQuestions(questions?.data);
         return;
       }
       const updatedQuestions = questions?.data.map(ele => {
-        console.log(ele);
         const { name, options, _id } = ele;
         const updatedOptions = Object.values(options).map(e => e.optionValue);
         return {
@@ -38,7 +36,6 @@ export default function QuestionsList({ onSave }) {
           options: createGroups(updatedOptions, 2),
         };
       });
-      console.log(updatedQuestions);
       setCurrentQuestions(updatedQuestions);
       setProgress(false);
     } catch (err) {
@@ -70,7 +67,6 @@ export default function QuestionsList({ onSave }) {
   };
 
   const handleChange = e => {
-    console.log(e.target);
     const { name, value } = e.target;
 
     // Set values

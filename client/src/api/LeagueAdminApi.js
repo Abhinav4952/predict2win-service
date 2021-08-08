@@ -51,4 +51,22 @@ export default {
       payload: { leagueId, questionAnswers },
     };
   },
+
+  getParticipantsByLeagueId(leagueId) {
+    return {
+      url: `${BASE}/getParticipationsByLeagueId/${leagueId}`,
+    };
+  },
+
+  getLeaderBoardByLeagueId(leagueId) {
+    return {
+      url: `${BASE}/getLeaderBoardByLeagueId/${leagueId}`,
+    };
+  },
+
+  getLeaugeStats(leagueId) {
+    return {
+      url: `${BASE}/getLeagueStats/${leagueId}`,
+    };
+  },
 };

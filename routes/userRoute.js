@@ -8,7 +8,8 @@ const {
   getQuestionByLeague,
   updateAnswersForLeague,
   getQuestionDetailsByParticipationId,
-  getAnswersByParticipation
+  getAnswersByParticipation,
+  getLeaderBoardByLeagueId,
 } = require('../controllers/userController');
 const { protect } = require('../middleware/auth');
 
@@ -19,6 +20,7 @@ router.route('/getQuestionsByLeagueId/:leagueId').get(protect, getQuestionByLeag
 router.route('/updateAnswers/:participationId').post(protect, updateAnswersForLeague);
 router.route('/getQuestionDetails/:participationId').get(protect, getQuestionDetailsByParticipationId);
 router.route('/getAnswersByParticipation/:participationId').get(protect, getAnswersByParticipation);
+router.route('/getLeaderBoard/:leagueId').get(protect, getLeaderBoardByLeagueId);
 //Add more validation to above  API
 
 module.exports = router;

@@ -604,3 +604,137 @@ exports.getAnswersByParticipation = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getLeaderBoardByLeagueId = async (req, res, next) => {
+  try {
+    const leagueId = req.params.leagueId;
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    if (![LeagueStatus.RegistrationClosed, LeagueStatus.Expired].includes(league?.leagueStatus)) {
+      return next(new ErrorResponse('League is still accepting Answers', 400));
+    }
+
+    const leaderBoard = await UserParticipation.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [
+              {
+                $eq: ['$leagueId', mongoose.Types.ObjectId(leagueId)],
+              },
+              {
+                $ne: ['$userParticipationStatus', 'REGISTERED'],
+              },
+            ],
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$questionsAnswered',
+        },
+      },
+      {
+        $lookup: {
+          from: 'leaguequestions',
+          let: {
+            itemId: {
+              $toObjectId: '$questionsAnswered.questionId',
+            },
+            items: '$questionsAnswered',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$itemId'],
+                },
+              },
+            },
+            {
+              $replaceRoot: {
+                newRoot: {
+                  $mergeObjects: ['$$items', '$$ROOT'],
+                },
+              },
+            },
+          ],
+          as: 'questionDetails',
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          userParticipationStatus: {
+            $first: '$userParticipationStatus',
+          },
+          leagueId: {
+            $first: '$leagueId',
+          },
+          userId: {
+            $first: '$userId',
+          },
+          questionDetails: {
+            $push: {
+              $first: '$questionDetails',
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $unwind: {
+          path: '$userDetails',
+        },
+      },
+      {
+        $project: {
+          'questionDetails.isDeleted': 0,
+          'questionDetails.created': 0,
+          'questionDetails.__v': 0,
+          'questionDetails.leagueId': 0,
+          'userDetails._id': 0,
+          'userDetails.userType': 0,
+          'userDetails.userStatus': 0,
+          'userDetails.updated': 0,
+          'userDetails.password': 0,
+          'userDetails.resetPasswordExpire': 0,
+          'userDetails.resetPasswordToken': 0,
+          'userDetails.__v': 0,
+        },
+      },
+    ]);
+
+    const calculatedLeaderBoard = leaderBoard.map(ele => {
+      const currentAns = ele.questionDetails.filter(e => e.option === e.correctAnswer);
+      const result = currentAns.reduce(
+        (accumulator, currentValue) => accumulator + (currentValue.correctAnswerValue - currentValue.wrongAnswerValue),
+        0,
+      );
+      return {
+        ...ele,
+        result,
+      };
+    });
+
+    const sortedLeagerBoard = calculatedLeaderBoard.sort((a, b) => b.result - a.result);
+    res.status(200).json({
+      success: true,
+      data: sortedLeagerBoard,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

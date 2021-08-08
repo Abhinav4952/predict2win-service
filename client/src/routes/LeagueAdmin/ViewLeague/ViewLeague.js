@@ -57,7 +57,7 @@ export default function ViewLeague() {
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>
                   <Paper elevation={'3'} className="p-3">
-                    <LeagueUserDashboard />
+                    <LeagueUserDashboard leagueStatus={leagueDetails?.leagueStatus} />
                   </Paper>
                 </Grid>
               </Grid>
