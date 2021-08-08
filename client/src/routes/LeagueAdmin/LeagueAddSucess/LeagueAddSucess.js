@@ -13,12 +13,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function LeagueAddSucess({}) {
+export default function LeagueAddSucess({ text = 'You will get an email with further instructions' }) {
   const classes = useStyles();
   const history = useHistory();
 
   useEffect(() => {
     setTimeout(() => history.replace('/'), 3000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Box className={classes.box}>
@@ -26,7 +27,7 @@ export default function LeagueAddSucess({}) {
         Thank you!
       </Typography>
       <Typography component="p" align="center" className={classes.title}>
-        You will get an email with further instructions
+        {text}
       </Typography>
     </Box>
   );

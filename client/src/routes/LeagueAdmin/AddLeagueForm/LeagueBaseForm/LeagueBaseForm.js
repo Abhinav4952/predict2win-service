@@ -46,7 +46,7 @@ const fieldsValidation = {
   },
 };
 
-export default function LeagueBaseForm({}) {
+export default function LeagueBaseForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
