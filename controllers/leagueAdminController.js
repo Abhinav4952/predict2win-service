@@ -365,30 +365,6 @@ exports.updateAnswers = async (req, res, next) => {
 exports.getCurretUserLeague = async (req, res, next) => {
   try {
     const userDetails = req.user;
-    // const leagues = await League.find({ userId: userDetails._id }, {__v:0});
-
-    // const updatedLeague = await League.aggregate([
-    //   {
-    //     $lookup: {
-    //       from: 'users',
-    //       localField: 'userId',
-    //       foreignField: '_id',
-    //       as: 'userDetails',
-    //     },
-    //   },
-    //   {
-    //     $unwind: {
-    //       path: '$userDetails',
-    //       preserveNullAndEmptyArrays: true,
-    //     },
-    //   },
-    //   {
-    //     $project: {
-    //       __v: 0,
-    //       'userDetails.__v': 0,
-    //     },
-    //   },
-    // ]);
     const leagues = await League.aggregate([
       {
         $match: {
@@ -402,7 +378,7 @@ exports.getCurretUserLeague = async (req, res, next) => {
       },
       {
         $sort: {
-          expiryDate: -1,
+          expiryDate: 1,
         },
       },
     ]);
