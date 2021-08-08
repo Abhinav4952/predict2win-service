@@ -1,6 +1,7 @@
 import { Route } from 'react-router-dom';
 import comingSoon from '../../assets/comingSoon.jpg';
 import Navigation from '../../components/lib/Navigation/Navigation';
+import AddLeagueAdmin from './AddLeagueAdmin/AddLeagueAdmin';
 
 export default function AdminRoute() {
   const routes = [
@@ -16,9 +17,7 @@ export default function AdminRoute() {
         </div>
       </Route>
       <Route exact path="/add-league-admin">
-        <div className="d-flex justify-content-between align-items-center align-content-center flex-column">
-          <img src={comingSoon} alt="" style={{ width: '100%' }} />
-        </div>
+        <AddLeagueAdmin />
       </Route>
     </>
   );

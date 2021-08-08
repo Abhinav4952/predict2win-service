@@ -1,52 +1,48 @@
+import { Box, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
 import { useState } from 'react';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import formValidation from '../../../../helpers/formValidation/formValidation';
-import LeagueBasicDetails from '../LeagueBasicDetails/LeagueBasicDetails';
-import LeagueImageUpload from '../LeagueImageUpload/LeagueImageUpload';
-import LeagueDetailsConfirmation from '../LeagueDetailsConfirmation/LeagueDetailsConfirmation';
-import LeagueAddSucess from '../../LeagueAddSucess/LeagueAddSucess';
+import LeagueAddSucess from '../../../LeagueAdmin/LeagueAddSucess/LeagueAddSucess';
+import LeagueAdminBasicDetails from './LeagueAdminBasicDetails/LeagueAdminBasicDetails';
+import LeagueAdminDetailConfirmation from './LeagueAdminDetailConfirmation/LeagueAdminDetailConfirmation';
 
 // Step titles
-const labels = ['League Details', 'League Image', 'Confirmation'];
+const labels = ['League Admin Details', 'Confirmation'];
 
 const initialValues = {
-  leagueName: '',
-  leagueCategory: '',
-  endTime: '',
-  leagueDescription: '',
+  firstName: '',
+  lastName: '',
+  username: '',
+  email: '',
 };
 
 const fieldsValidation = {
-  leagueName: {
+  firstName: {
+    error: '',
+    validate: 'text',
+    minLength: 2,
+    maxLength: 10,
+  },
+  lastName: {
+    error: '',
+    validate: 'text',
+    minLength: 2,
+    maxLength: 10,
+  },
+  username: {
     error: '',
     validate: 'text',
     minLength: 2,
     maxLength: 15,
   },
-  leagueCategory: {
+  email: {
     error: '',
-    validate: 'text',
-  },
-  endTime: {
-    error: '',
-    validate: 'date',
-  },
-  leagueDescription: {
-    error: '',
-    validate: 'text',
+    validate: 'email',
     minLength: 2,
     maxLength: 30,
   },
-  leagueIcon: {
-    validate: 'image',
-  },
 };
 
-export default function LeagueBaseForm() {
+export default function LeagueAdminBaseForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
@@ -57,7 +53,6 @@ export default function LeagueBaseForm() {
   const handleBack = () => setActiveStep(prev => prev - 1);
 
   const handleChange = e => {
-    console.log(e.target);
     const { name, value } = e.target;
 
     // Set values
@@ -78,7 +73,7 @@ export default function LeagueBaseForm() {
     switch (step) {
       case 0:
         return (
-          <LeagueBasicDetails
+          <LeagueAdminBasicDetails
             handleNext={handleNext}
             handleChange={handleChange}
             values={formValues}
@@ -86,17 +81,7 @@ export default function LeagueBaseForm() {
           />
         );
       case 1:
-        return (
-          <LeagueImageUpload
-            handleNext={handleNext}
-            handleBack={handleBack}
-            handleChange={handleChange}
-            values={formValues}
-            formErrors={formErrors}
-          />
-        );
-      case 2:
-        return <LeagueDetailsConfirmation handleNext={handleNext} handleBack={handleBack} values={formValues} />;
+        return <LeagueAdminDetailConfirmation handleNext={handleNext} handleBack={handleBack} values={formValues} />;
       default:
         break;
     }
@@ -106,15 +91,15 @@ export default function LeagueBaseForm() {
     <>
       {activeStep === labels.length ? (
         // Last Component
-        <LeagueAddSucess values={formValues} />
+        <LeagueAddSucess text="User will get an email with further instructions" />
       ) : (
         <>
           <Box style={{ margin: '30px 0 50px' }}>
             <Typography variant="h4" align="center">
-              Add League
+              Add League Admin
             </Typography>
             <Typography variant="subtitle2" align="center" style={{ margin: '10px 0' }}>
-              Register your League and invite participants to join here
+              Register League Admin and invite them to add Leagues
             </Typography>
           </Box>
           <Stepper activeStep={activeStep} style={{ margin: '30px 0 15px' }} alternativeLabel>
