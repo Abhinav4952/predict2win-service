@@ -56,7 +56,7 @@ export default function LeagueUserDashboard({ leagueStatus }) {
 
   const leaderBoardColData = [
     { dataField: 'rank', text: 'Position', sort: true },
-    { dataField: 'name', text: 'Name', sort: true },
+    { dataField: 'name', text: 'Name', sort: false },
     { dataField: 'score', text: 'Score', sort: true },
   ];
 
@@ -167,7 +167,6 @@ export default function LeagueUserDashboard({ leagueStatus }) {
           )}
         </TabPanel>
       </SwipeableViews>
-      {leagueStatus}
     </>
   );
 
