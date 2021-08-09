@@ -8,6 +8,7 @@ import LeagueAdminApi from '../../../../api/LeagueAdminApi';
 import UserListBootstrap from './UserListBootstrap/UserListBootstrap';
 import ProgressContainer from '../../../../components/lib/ProgressContainer/ProgressContainer';
 import LeagueStatus from '../../../../helpers/enums/LeagueStatus';
+import ErrorContainer from '../../../../components/lib/ErrorContainer/ErrorContainer';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -42,7 +43,6 @@ export default function LeagueUserDashboard({ leagueStatus }) {
   const [leaderBoardProgress, setleaderBoardProgresss] = useState(true);
   // eslint-disable-next-line no-unused-vars
   const [leaderBoardError, setleaderBoardError] = useState(true);
-  // eslint-disable-next-line no-unused-vars
   const [error, seterror] = useState();
   const [participantsList, setparticipantsList] = useState([]);
   const [leaderBoardList, setLeaderBoardList] = useState([]);
@@ -116,10 +116,17 @@ export default function LeagueUserDashboard({ leagueStatus }) {
       setLeaderBoardList(updatedLeaderBoardList);
       setleaderBoardProgresss(false);
     } catch (err) {
+      console.log(JSON.stringify({ err }));
       setleaderBoardError(err);
       setleaderBoardProgresss(false);
-      console.log(err);
     }
+  };
+
+  const getHandlerContainer = (errText, errorVal) => {
+    if (errorVal) {
+      return <ErrorContainer text={errText} />;
+    }
+    return <ProgressContainer />;
   };
 
   useEffect(() => {
@@ -154,7 +161,7 @@ export default function LeagueUserDashboard({ leagueStatus }) {
               {!progress && participantsList.length ? (
                 <UserListBootstrap data={participantsList} colData={participantsColData} />
               ) : (
-                <ProgressContainer />
+                getHandlerContainer(`Unable to fetch participants list \n ${error?.data?.error || ''}`, error)
               )}
             </Grid>
           </Grid>
@@ -163,7 +170,10 @@ export default function LeagueUserDashboard({ leagueStatus }) {
           {!leaderBoardProgress && leaderBoardList.length ? (
             <UserListBootstrap data={leaderBoardList} colData={leaderBoardColData} />
           ) : (
-            <ProgressContainer />
+            getHandlerContainer(
+              `Unable to fetch leaderboard status \n ${leaderBoardError?.data?.error || ''}`,
+              leaderBoardError,
+            )
           )}
         </TabPanel>
       </SwipeableViews>

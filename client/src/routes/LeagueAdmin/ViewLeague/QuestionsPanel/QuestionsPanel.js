@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import AddQuestion from './AddQuestion/AddQuestion';
 import SaveIcon from '@material-ui/icons/Save';
@@ -7,23 +7,25 @@ import Api from '../../../../api/Api';
 import { useParams } from 'react-router-dom';
 import SlotInput from './SlotInput/SlotInput';
 import LeagueAdminApi from '../../../../api/LeagueAdminApi';
+import ErrorContainer from '../../../../components/lib/ErrorContainer/ErrorContainer';
+import ProgressContainer from '../../../../components/lib/ProgressContainer/ProgressContainer';
 
 export default function QuestionsPanel({ onStartLeague }) {
   const [addQuestion, setAddQuestion] = useState(false);
   const [progress, setProgress] = useState(false);
+  const [error, setError] = useState();
   const [leagueQuestions, setCurrentQuestions] = useState([]);
   const [disableStartLeague, setdisableStartLeague] = useState(false);
   const [slots, setSlotsInput] = useState(false);
 
   const params = useParams();
 
-  const progressContainer = (
-    <div className="d-flex justify-content-center align-items-center align-content-center" style={{ height: '330px' }}>
-      <Box>
-        <CircularProgress />
-      </Box>
-    </div>
-  );
+  const getHandlerContainer = (errText, errorVal) => {
+    if (errorVal) {
+      return <ErrorContainer text={errText} />;
+    }
+    return <ProgressContainer />;
+  };
 
   const onStart = async () => {
     try {
@@ -57,7 +59,12 @@ export default function QuestionsPanel({ onStartLeague }) {
       console.log(questions?.data);
       setCurrentQuestions(questions?.data);
       setProgress(false);
+      if(questions?.data?.length === 0){
+        setError("No Questions to display");
+      }
     } catch (err) {
+      setError(err);
+      setProgress(false);
       console.log(err);
     }
   };
@@ -85,6 +92,7 @@ export default function QuestionsPanel({ onStartLeague }) {
 
   useEffect(() => {
     getQuestionsByLeagueId();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const questionsPanelContainer = (
@@ -130,5 +138,7 @@ export default function QuestionsPanel({ onStartLeague }) {
     </>
   );
 
-  return progress && !leagueQuestions ? progressContainer : questionsPanelContainer;
+  return progress && !leagueQuestions
+    ? getHandlerContainer('Unable to fecthQuestions', error)
+    : questionsPanelContainer;
 }

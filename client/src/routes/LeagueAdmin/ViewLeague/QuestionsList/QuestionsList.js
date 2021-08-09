@@ -1,14 +1,17 @@
-import { Grid, Button, Box, CircularProgress } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../../api/Api';
 import LeagueAdminApi from '../../../../api/LeagueAdminApi';
+import ErrorContainer from '../../../../components/lib/ErrorContainer/ErrorContainer';
+import ProgressContainer from '../../../../components/lib/ProgressContainer/ProgressContainer';
 import Questions from '../../../../components/lib/Questions/Questions';
 
 export default function QuestionsList({ onSave }) {
   const params = useParams();
   const [progress, setProgress] = useState(false);
+  const [error, setError] = useState();
   const [leagueQuestions, setCurrentQuestions] = useState([]);
   const [submitDisable, setsubmitDisable] = useState(false);
 
@@ -25,6 +28,7 @@ export default function QuestionsList({ onSave }) {
       const questions = await Api.performRequest(LeagueAdminApi.getQuestionByLeagueId(params.leagueId));
       if (!questions?.data.length) {
         setCurrentQuestions(questions?.data);
+        setError('No Questions to display');
         return;
       }
       const updatedQuestions = questions?.data.map(ele => {
@@ -39,6 +43,8 @@ export default function QuestionsList({ onSave }) {
       setCurrentQuestions(updatedQuestions);
       setProgress(false);
     } catch (err) {
+      setError(err);
+      setProgress(false);
       console.log(err);
     }
   };
@@ -76,13 +82,12 @@ export default function QuestionsList({ onSave }) {
     }));
   };
 
-  const progressContainer = (
-    <div className="d-flex justify-content-center align-items-center align-content-center" style={{ height: '330px' }}>
-      <Box>
-        <CircularProgress />
-      </Box>
-    </div>
-  );
+  const getHandlerContainer = (errText, errorVal) => {
+    if (errorVal) {
+      return <ErrorContainer text={errText} />;
+    }
+    return <ProgressContainer />;
+  };
 
   useEffect(() => {
     getQuestionsByLeagueId();
@@ -93,7 +98,9 @@ export default function QuestionsList({ onSave }) {
 
   return (
     <Grid container spacing={2} direction="column">
-      {progress && !leagueQuestions.length ? progressContainer : questionsContainer}
+      {progress && !leagueQuestions.length
+        ? getHandlerContainer('Unable to fecth Questions', error)
+        : questionsContainer}
       <Grid item xs={12} md={12} lg={12} className="my-3">
         <Grid container spacing={2} justifyContent="flex-end">
           <Button

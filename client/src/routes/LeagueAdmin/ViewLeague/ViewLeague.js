@@ -1,8 +1,10 @@
-import { Box, Grid, Container, Paper, CircularProgress } from '@material-ui/core';
+import { Grid, Container, Paper } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../api/Api';
 import LeagueAdminApi from '../../../api/LeagueAdminApi';
+import ErrorContainer from '../../../components/lib/ErrorContainer/ErrorContainer';
+import ProgressContainer from '../../../components/lib/ProgressContainer/ProgressContainer';
 import LeagueStatus from '../../../helpers/enums/LeagueStatus';
 import AnsweredQuestionsList from './AnsweredQuestionsList/AnsweredQuestionsList';
 import LeagueInfo from './LeagueInfo/LeagueInfo';
@@ -14,6 +16,7 @@ import QuestionsPanel from './QuestionsPanel/QuestionsPanel';
 export default function ViewLeague() {
   const params = useParams();
   const [progress, setProgress] = useState(false);
+  const [error, setError] = useState(false);
   const [leagueDetails, setleagueDetails] = useState();
 
   const getLeagueById = async () => {
@@ -25,6 +28,8 @@ export default function ViewLeague() {
       setProgress(false);
     } catch (err) {
       console.log(err);
+      setError(err);
+      setProgress(false);
     }
   };
 
@@ -33,18 +38,18 @@ export default function ViewLeague() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.leagueId]);
 
-  const progressContainer = (
-    <div className="d-flex justify-content-center align-items-center align-content-center" style={{ height: '330px' }}>
-      <Box>
-        <CircularProgress />
-      </Box>
-    </div>
-  );
+  const getHandlerContainer = (errText, errorVal) => {
+    if (errorVal) {
+      return <ErrorContainer text={errText} />;
+    }
+    return <ProgressContainer />;
+  };
+
   return (
     <Paper style={{ background: '#FFFFF' }}>
       <Container maxWidth="xl" className="p-3">
         {progress && !leagueDetails ? (
-          progressContainer
+          getHandlerContainer('Unable to fetch league Details', error)
         ) : (
           <Grid container spacing={3}>
             <LeagueTiles />
