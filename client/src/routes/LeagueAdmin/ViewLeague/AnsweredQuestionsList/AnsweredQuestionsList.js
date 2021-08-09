@@ -1,13 +1,16 @@
-import { Box, CircularProgress, Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../../../api/Api';
 import { green } from '@material-ui/core/colors';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import LeagueAdminApi from '../../../../api/LeagueAdminApi';
+import ErrorContainer from '../../../../components/lib/ErrorContainer/ErrorContainer';
+import ProgressContainer from '../../../../components/lib/ProgressContainer/ProgressContainer';
 
 export default function AnsweredQuestionsList() {
   const [progress, setProgress] = useState(false);
+  const [error, setError] = useState();
   const [leagueQuestions, setCurrentQuestions] = useState([]);
   const params = useParams();
 
@@ -30,12 +33,14 @@ export default function AnsweredQuestionsList() {
       setProgress(false);
     } catch (err) {
       setProgress(false);
+      setError(err);
       console.log(err);
     }
   };
 
   useEffect(() => {
     getQuestionsByLeagueId();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updatedQuestinsCotainer = leagueQuestions.map(question => (
@@ -74,13 +79,14 @@ export default function AnsweredQuestionsList() {
     </Grid>
   );
 
-  const progressContainer = (
-    <div className="d-flex justify-content-center align-items-center align-content-center" style={{ height: '330px' }}>
-      <Box>
-        <CircularProgress />
-      </Box>
-    </div>
-  );
+  const getHandlerContainer = (errText, errorVal) => {
+    if (errorVal) {
+      return <ErrorContainer text={errText} />;
+    }
+    return <ProgressContainer />;
+  };
 
-  return !progress && leagueQuestions.length ? currentQuestionsContainer : progressContainer;
+  return !progress && leagueQuestions.length
+    ? currentQuestionsContainer
+    : getHandlerContainer('Unable to fetch questions', error);
 }
