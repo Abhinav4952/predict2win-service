@@ -34,3 +34,11 @@ if (process.argv[2] === "--import") {
 } else if (process.argv[2] === "--delete") {
   deleteData();
 }
+
+
+//Create a admin by directly connecting to DB
+//Create a 2 league admin by using create league admin
+//Create two normal users and story the jwt token
+//for every league admin create 3 leagues with 5 questions each
+//all the above create league register for atleast one league
+//done
