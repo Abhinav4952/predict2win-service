@@ -1,16 +1,15 @@
 require('dotenv').config({ path: '../../config.env' });
-const UserRole = require('../../helpers/enums/UserRole');
 const User = require('../../models/User');
 
-async function createAdminUser() {
+async function createUser({username, email, password, userType }) {
   return new Promise((resolve, reject) => {
     (async () => {
       try {
         const user = await User.create({
-          username: 'seed data admin',
-          email: 'testadmin@gmail.com',
-          password: 'admin1234',
-          userType: UserRole.Admin,
+          username,
+          email,
+          password,
+          userType,
           created: new Date().toISOString(),
           updated: new Date().toISOString(),
         });
@@ -31,4 +30,4 @@ const sendToken = user => {
   return token;
 };
 
-module.exports = createAdminUser;
+module.exports = createUser;
