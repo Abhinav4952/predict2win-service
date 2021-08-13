@@ -40,8 +40,8 @@ if (process.argv[2] === "--import") {
 //Create a 2 league admin by using create league admin - DONE
 //Create two normal users and story the jwt token - DONE
 //for every league admin create 3 leagues - DONE
-//for every league create 5 questions and with 4 options and start the league once questions are created
+//for every league create 5 questions and with 4 options and start the league once questions are created - DONE
 //register user for atleast 2 leagues
-//for every registered league once done submit answers for it
-//all the above create league register for atleast one league
+//for every registered league once done submit users answers for it
+//all the above created league submit answers for it
 //done
