@@ -17,4 +17,6 @@ router.route("/forgotpassword").post(forgotPassword);
 
 router.route("/passwordreset/:resetToken").put(resetPassword);
 
+router.route("/socialLogin/").post(resetPassword);
+
 module.exports = router;
