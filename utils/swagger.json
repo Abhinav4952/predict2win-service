@@ -9,19 +9,19 @@
   "tags": [
     {
       "name": "Authentication",
-      "description": "APIs for authentication"
+      "description": "API for authentication"
     },
     {
       "name": "Users",
-      "description": "APIs for normal users"
+      "description": "API for normal users"
     },
     {
       "name": "League Admin",
-      "description": "APIs for League Admin"
+      "description": "API for League Admin"
     },
     {
       "name": "Admin",
-      "description": "APIs Admin"
+      "description": "API for Admin"
     }
   ],
   "schemes": ["https", "http"],
@@ -125,6 +125,86 @@
         "startDate": { "type": "string" },
         "expiryDate": { "type": "string" },
         "updated": { "type": "string" }
+      }
+    },
+    "League Question Option Schema": {
+      "required": ["optionValue"],
+      "properties": {
+        "optionValue": {
+          "type": "string"
+        }
+      }
+    },
+    "League Question": {
+      "type": "object",
+      "required": ["name", "leagueId", "correctAnswerValue"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "leagueId": {
+          "type": "string"
+        },
+        "questionType": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/League Question Option Schema"
+          }
+        },
+        "correctAnswerValue": {
+          "type": "number"
+        },
+        "wrongAnswerValue": {
+          "type": "number"
+        },
+        "correctAnswer": {
+          "type": "string"
+        },
+        "isAnswerUpdated": {
+          "type": "boolean"
+        },
+        "isDeleted": {
+          "type": "boolean"
+        },
+        "created": { "type": "string" },
+        "expiryDate": { "type": "string" }
+      }
+    },
+    "Selected Answer Schema": {
+      "properties": {
+        "questionId": {
+          "type": "string"
+        },
+        "option": {
+          "type": "string"
+        }
+      }
+    },
+    "User Participation": {
+      "type": "object",
+      "required": ["userId", "leagueId"],
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "leagueId": {
+          "type": "string"
+        },
+        "userParticipationStatus": {
+          "type": "string",
+          "enum": ["REGISTERED", "QUESTIONS_ANSWERED", "CLOSED"]
+        },
+        "questionsAnswered": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Selected Answer Schema"
+          }
+        },
+        "created": { "type": "string" },
+        "expiryDate": { "type": "string" }
       }
     }
   }
