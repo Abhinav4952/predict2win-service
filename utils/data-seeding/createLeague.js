@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const LeagueCategory = require('../../helpers/enums/LeagueCategory');
 const LeagueStatus = require('../../helpers/enums/LeagueStatus');
+var moment = require('moment');
 
 const getRandomLimit = (upperLimit, lowerLimit) => Math.floor(Math.random() * upperLimit) + lowerLimit;
 
@@ -38,7 +39,7 @@ async function createLeague(leagueAdminId) {
             contentType: 'image/png',
           },
           created: new Date().toISOString(),
-          expiryDate: new Date('2021-10-15').toISOString(),
+          expiryDate: moment().add(5, 'months').toISOString(),
         });
 
         console.log('League Created');

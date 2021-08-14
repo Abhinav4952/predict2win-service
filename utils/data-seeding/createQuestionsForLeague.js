@@ -29,14 +29,13 @@ async function createQuestionsForLeague(leagueId, questionsLength) {
           },
         });
 
-        const options = [
-          { optionValue: lorem.generateWords(1) },
-          { optionValue: lorem.generateWords(1) },
-          { optionValue: lorem.generateWords(1) },
-          { optionValue: lorem.generateWords(1) },
-        ];
-
         await asyncForEach(leagueQuestionsLength, async element => {
+          const options = [
+            { optionValue: lorem.generateWords(1) },
+            { optionValue: lorem.generateWords(1) },
+            { optionValue: lorem.generateWords(1) },
+            { optionValue: lorem.generateWords(1) },
+          ];
           await LeagueQuestion.create({
             name: lorem.generateSentences(3),
             leagueId,
