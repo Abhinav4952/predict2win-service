@@ -27,7 +27,204 @@
   "schemes": ["https", "http"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "paths": {},
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login into predict2win applciation",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Login Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "login success",
+            "schema": {
+              "$ref": "#/definitions/Login Response"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Register into into predict2win applciation",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Register Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Register success",
+            "schema": {
+              "$ref": "#/definitions/Login Response"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/forgotpassword": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Forgot Password",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Forgot Password",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForgotPassword Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "schema": {
+              "$ref": "#/definitions/ForgotPassword Response"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "No email could not be sent"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/passwordreset/{resetToken}": {
+      "put": {
+        "tags": ["Authentication"],
+        "summary": "Reset password",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resetToken",
+            "description": "Reset token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password Reset Successfully",
+            "schema": {
+              "$ref": "#/definitions/Reset Password Response"
+            }
+          },
+          "404": {
+            "description": "Invalid token"
+          }
+        }
+      }
+    },
+    "/api/v1/leagueAdmin/addLeague": {
+      "post": {
+        "tags": ["League Admin"],
+        "summary": "Add League",
+        "consumes": ["multipart/form-data"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of the league",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "formData",
+            "description": "League Admin Id who is creating the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Description of the league",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "leagueCategory",
+            "in": "formData",
+            "description": "League Category",
+            "required": true,
+            "type": "string",
+            "enum": ["CRICKET", "FOOT_BALL", "BASKET_BALL"]
+          },
+          {
+            "name": "expiryDate",
+            "in": "formData",
+            "description": "End Date for the league",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "League Image",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "schema": {
+              "$ref": "#/definitions/Add League Response"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "League Can be added only by League Admin"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    }
+  },
   "securityDefinitions": {
     "JWT": {
       "type": "apiKey",
@@ -205,6 +402,92 @@
         },
         "created": { "type": "string" },
         "expiryDate": { "type": "string" }
+      }
+    },
+    "Login Request": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Login Response": {
+      "type": "object",
+      "properties": {
+        "sucess": {
+          "type": "boolean"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "Register Request": {
+      "type": "object",
+      "required": ["email", "password", "username"],
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "ForgotPassword Request": {
+      "type": "object",
+      "required": ["email"],
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "ForgotPassword Response": {
+      "type": "object",
+      "properties": {
+        "sucess": {
+          "type": "boolean"
+        },
+        "data": {
+          "type": "string",
+          "description": "Message indication forgot password success"
+        }
+      }
+    },
+    "Reset Password Response": {
+      "type": "object",
+      "properties": {
+        "sucess": {
+          "type": "boolean"
+        },
+        "token": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string",
+          "description": "Password Updated Success"
+        }
+      }
+    },
+    "Add League Response": {
+      "type": "object",
+      "properties": {
+        "sucess": {
+          "type": "boolean"
+        },
+        "data": {
+          "description": "League Details",
+          "$ref": "#/definitions/League"
+        }
       }
     }
   }
