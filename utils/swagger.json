@@ -223,6 +223,205 @@
           }
         ]
       }
+    },
+    "/api/v1/leagueAdmin/getLeagues": {
+      "get": {
+        "tags": ["League Admin"],
+        "summary": "Get Current User Leagues",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Current User leagues",
+            "schema": {
+              "$ref": "#/definitions/League"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/getLeagueById/{leagueId}": {
+      "get": {
+        "tags": ["League Admin"],
+        "summary": "Get Current User League By Id",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leagueId",
+            "description": "LeagueId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "League Details",
+            "schema": {
+              "$ref": "#/definitions/League"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized to view different users League"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/addQuestion": {
+      "post": {
+        "tags": ["League Admin"],
+        "summary": "Add Question for league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Add Question for a league",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Add Question"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Register success",
+            "schema": {
+              "$ref": "#/definitions/League Question"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/getQuestionsByLeague/{leagueId}": {
+      "get": {
+        "tags": ["League Admin"],
+        "summary": "Get All Questions for a league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leagueId",
+            "description": "LeagueId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current League Questions List",
+
+            "schema": {
+              "$ref": "#/definitions/League Question"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/updateAnswer": {
+      "post": {
+        "tags": ["League Admin"],
+        "summary": "Update Answers for league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Update answers for a league",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Update Answers Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Answers updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/startLeague": {
+      "post": {
+        "tags": ["League Admin"],
+        "summary": "Start a league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Start a league",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Start League Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "League Started Successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -487,6 +686,72 @@
         "data": {
           "description": "League Details",
           "$ref": "#/definitions/League"
+        }
+      }
+    },
+    "Add Question": {
+      "type": "object",
+      "required": ["name", "leagueId", "questionType", "options", "correctAnswerValue"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "leagueId": {
+          "type": "string"
+        },
+        "questionType": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/League Question Option Schema"
+          },
+          "minItems": 4
+        },
+        "correctAnswerValue": {
+          "type": "number"
+        },
+        "wrongAnswerValue": {
+          "type": "number"
+        }
+      }
+    },
+    "Updates Answers Option Schema": {
+      "properties": {
+        "optionValue": {
+          "type": "string"
+        },
+        "questionId": {
+          "type": "string"
+        }
+      }
+    },
+    "Update Answers Request": {
+      "type": "object",
+      "required": ["questionAnswers", "leagueId"],
+      "properties": {
+        "leagueId": {
+          "type": "string"
+        },
+        "questionAnswers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Updates Answers Option Schema"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "Start League Request": {
+      "type": "object",
+      "required": ["slots", "leagueId"],
+      "properties": {
+        "leagueId": {
+          "type": "string"
+        },
+        "slots": {
+          "type": "integer"
         }
       }
     }
