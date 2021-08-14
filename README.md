@@ -16,6 +16,17 @@ Schema validation using JOI
 
 Logging will be done using PINO 
 
+
+For initial data it can be seeded using code present in separate branch [feature/seed-data](https://github.com/Abhinav4952/predict2win-service/tree/feature/seed-data)
+
+Steps for seeding data:-
+
+1. Checkout to branch [feature/seed-data](https://github.com/Abhinav4952/predict2win-service/tree/feature/seed-data)
+
+1. switch to utils/data-seeding
+
+1. run node index.js
+
  
 
 **Database**:- MongoDB Cloud  
