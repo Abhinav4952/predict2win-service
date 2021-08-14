@@ -1,0 +1,131 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Predict2Win Service",
+    "description": "Predict2Win provides Web Application to allow users to predict to questions which allow users to participate in a collaborative platform which can be like a social gaming"
+  },
+  "host": "localhost:5000",
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "APIs for authentication"
+    },
+    {
+      "name": "Users",
+      "description": "APIs for normal users"
+    },
+    {
+      "name": "League Admin",
+      "description": "APIs for League Admin"
+    },
+    {
+      "name": "Admin",
+      "description": "APIs Admin"
+    }
+  ],
+  "schemes": ["https", "http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {},
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    },
+    "api-key": {
+      "type": "apiKey",
+      "name": "api-key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "required": ["username", "email"],
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "username"
+        },
+        "email": {
+          "type": "string",
+          "description": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First Name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last Name"
+        },
+        "password": {
+          "type": "string",
+          "description": "Password",
+          "minLength": 8
+        },
+        "userType": {
+          "type": "string",
+          "description": "UserType",
+          "enum": ["USER", "ADMIN", "LEAGUE_ADMIN"],
+          "default": "USER"
+        },
+        "userStatus": {
+          "type": "string",
+          "description": "User Status",
+          "enum": ["CREATED", "VERIFIED", "IN_REVIEW", "REMOVED"],
+          "default": "CREATED"
+        },
+        "resetPasswordToken": {
+          "type": "string"
+        },
+        "resetPasswordExpire": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        }
+      }
+    },
+    "League": {
+      "type": "object",
+      "required": ["name", "userId", "expiryDate"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "leagueStatus": {
+          "type": "string",
+          "enum": ["CREATED", "REGISTRATION_OPEN", "REGISTRATION_CLOSED", "IN_PROGRESS", "EXPIRED"]
+        },
+        "image": {
+          "type": "string"
+        },
+        "leagueCategory": {
+          "type": "string",
+          "enum": ["CRICKET", "FOOT_BALL", "BASKET_BALL"],
+          "default": "CREATED"
+        },
+        "slots": {
+          "type": "number",
+          "default": 0
+        },
+        "created": { "type": "string" },
+        "startDate": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "updated": { "type": "string" }
+      }
+    }
+  }
+}
