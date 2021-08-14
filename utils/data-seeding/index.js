@@ -5,12 +5,8 @@ const createUsers = require('./createUsers');
 const createQuestionsForLeague = require('./createQuestionsForLeague');
 const User = require('../../models/User');
 const League = require('../../models/League');
-const LoremIpsum = require('lorem-ipsum').LoremIpsum;
-const path = require('path');
-const fs = require('fs');
-const LeagueCategory = require('../../helpers/enums/LeagueCategory');
-const LeagueStatus = require('../../helpers/enums/LeagueStatus');
 const createLeague = require('./createLeague');
+const registerUsersforLeague = require('./registerUsersforLeague');
 
 connectDB();
 
@@ -24,19 +20,23 @@ async function asyncForEach(array, callback) {
   console.log('Seeding Data');
   try {
     console.log('Creating users');
-    const usersList = await createUsers();
+    await createUsers();
     console.log('Users Created');
     const leagueAdminsList = await User.find({ userType: UserRole.LeagueAdmin }, { _id: 1 });
     await asyncForEach(leagueAdminsList, async element => {
       await createLeague(element._id);
     });
-    const leaguesList = await League.find({}, { _id: 1 });
+    const leaguesList = await League.find({}, { _id: 1, slots: 1 });
     console.log('leagues created', leaguesList);
     await asyncForEach(leaguesList, async element => {
       await createQuestionsForLeague(element._id, 5);
     });
     console.log('Questions created for all leagues');
-    // console.log(lorem.generateSentences(5));
+    const normalUsersList = await User.find({ userType: UserRole.User }, { _id: 1 });
+    await registerUsersforLeague({
+      usersList: normalUsersList,
+      leaguesList,
+    });
   } catch (err) {
     console.log(err);
   }

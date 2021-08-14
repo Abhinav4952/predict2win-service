@@ -42,7 +42,6 @@ async function createLeague(leagueAdminId) {
         });
 
         console.log('League Created');
-        console.log(leagueDetails);
         resolve(leagueDetails);
       } catch {
         err => {
