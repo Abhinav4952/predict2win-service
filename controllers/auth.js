@@ -55,7 +55,7 @@ exports.socialLogin = async (req, res, next) => {
       username: Joi.string(),
       firstName: Joi.string(),
       lastName: Joi.string(),
-      password: Joi.string().required()
+      password: Joi.string().required(),
     });
 
     // schema options
@@ -82,7 +82,7 @@ exports.socialLogin = async (req, res, next) => {
         email,
         firstName,
         lastName,
-        password
+        password,
       });
       sendToken(userDetails, 200, res);
     }
