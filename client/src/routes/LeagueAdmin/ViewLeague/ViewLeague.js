@@ -12,6 +12,7 @@ import LeagueTiles from './LeagueTiles/LeagueTiles';
 import LeagueUserDashboard from './LeagueUserDashboard/LeagueUserDashboard';
 import QuestionsList from './QuestionsList/QuestionsList';
 import QuestionsPanel from './QuestionsPanel/QuestionsPanel';
+import UserDiscussionForum from './UserDiscussionForum/UserDiscussionForum';
 
 export default function ViewLeague() {
   const params = useParams();
@@ -63,6 +64,11 @@ export default function ViewLeague() {
                 <Grid item xs={12} sm={12} md={12}>
                   <Paper elevation={'3'} className="p-3">
                     <LeagueUserDashboard leagueStatus={leagueDetails?.leagueStatus} />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12}>
+                  <Paper elevation={'3'} className="p-3">
+                    <UserDiscussionForum />
                   </Paper>
                 </Grid>
               </Grid>
