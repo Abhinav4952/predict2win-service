@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Api from '../../../api/Api';
 import LeagueDetails from './LeagueDetails/LeagueDetails';
 import LeagueAdminApi from '../../../api/LeagueAdminApi';
+import io from "socket.io-client";
 
 const useStyles = makeStyles({
   gridContainer: {
@@ -16,6 +17,7 @@ export default function LeagueAdminHome() {
   const [progress, setProgress] = useState(true);
   const [leagues, setLeagues] = useState([]);
   const classes = useStyles();
+  let socket;
 
   const getCurrentUserLeague = async () => {
     try {
@@ -78,6 +80,10 @@ export default function LeagueAdminHome() {
 
   useEffect(() => {
     getCurrentUserLeague();
+    socket = io('http://localhost:5000', { transports : ['websocket'] });
+    console.log(`Connecting socket...`);
+    console.log(socket)
+    if (socket) socket.emit('push message', "mock data");
   }, []);
   return progress ? progressContainer : getCurrentLeagueData();
 }
