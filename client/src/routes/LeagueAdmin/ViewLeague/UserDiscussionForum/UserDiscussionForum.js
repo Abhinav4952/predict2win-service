@@ -7,16 +7,9 @@ export default function UserDiscussionForum() {
 
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    // if (messagesEndRef) {
-    //     messagesEndRef.current.addEventListener('DOMNodeInserted', event => {
-    //       const { currentTarget: target } = event;
-    //       console.log
-    //       target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
-    //     });
-    //   }
   };
 
-  useEffect(() => scrollToBottom(), []);
+  useEffect(() => {scrollToBottom()}, []);
   const otherUserMessage = (
     <Grid item xs={12} md={12} lg={12} style={{ marginRight: '75px' }}>
       <div className="px-0 d-flex flex-column">
