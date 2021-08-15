@@ -47,7 +47,7 @@ exports.login = async (req, res, next) => {
 };
 
 exports.socialLogin = async (req, res, next) => {
-  const { email, username, firstName, lastName } = req.body;
+  const { email, username, firstName, lastName, password } = req.body;
 
   try {
     const schema = Joi.object({
@@ -55,6 +55,7 @@ exports.socialLogin = async (req, res, next) => {
       username: Joi.string(),
       firstName: Joi.string(),
       lastName: Joi.string(),
+      password: Joi.string().required()
     });
 
     // schema options
@@ -81,6 +82,7 @@ exports.socialLogin = async (req, res, next) => {
         email,
         firstName,
         lastName,
+        password
       });
       sendToken(userDetails, 200, res);
     }

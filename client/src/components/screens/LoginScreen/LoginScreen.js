@@ -96,13 +96,49 @@ const LoginScreen = ({ history }) => {
     }
   };
 
-  const responseGoogle = async (response) => {
-    try{
+  const responseGoogle = async response => {
+    try {
+      const config = {
+        header: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const userDetails = response?.profileObj;
+      if (!userDetails) {
+        setError('Error while logging in');
+        setTimeout(() => {
+          setError('');
+        }, 5000);
+        return;
+      }
+      const userRequest = {
+        email: userDetails?.email,
+        username: userDetails?.name,
+        firstName: userDetails?.familyName,
+        lastName: userDetails?.givenName,
+        password: userDetails?.googleId,
+      };
+      const { data } = await axios.post('/api/v1/auth/socialLogin', userRequest, config);
+
+      localStorage.setItem('authToken', data.token);
+
+      history.push('/');
+    } catch (err) {
+      console.log(err);
+      setError('Error while logging in');
+      setTimeout(() => {
+        setError('');
+      }, 5000);
+    }
+  };
+
+  const errorResponseGoogle = async response => {
+    try {
       console.log(response);
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -161,7 +197,7 @@ const LoginScreen = ({ history }) => {
                 clientId="498194458961-hgose7sid1tu6aamdkp7on8l99i97ppi.apps.googleusercontent.com"
                 buttonText="Login with Google"
                 onSuccess={responseGoogle}
-                onFailure={responseGoogle}
+                onFailure={errorResponseGoogle}
                 className="w-100"
               ></GoogleLogin>
             </Grid>

@@ -7,6 +7,7 @@ const {
   register,
   forgotPassword,
   resetPassword,
+  socialLogin
 } = require("../controllers/auth");
 
 router.route("/register").post(register);
@@ -17,6 +18,6 @@ router.route("/forgotpassword").post(forgotPassword);
 
 router.route("/passwordreset/:resetToken").put(resetPassword);
 
-router.route("/socialLogin/").post(resetPassword);
+router.route("/socialLogin").post(socialLogin);
 
 module.exports = router;
