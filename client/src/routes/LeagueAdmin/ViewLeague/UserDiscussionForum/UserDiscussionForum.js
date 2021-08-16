@@ -1,7 +1,6 @@
 import { Card, CardContent, Grid, TextField, Typography } from '@material-ui/core';
 import { useEffect, useRef } from 'react';
 import SendIcon from '@material-ui/icons/Send';
-
 export default function UserDiscussionForum() {
   const messagesEndRef = useRef(null);
 
@@ -9,7 +8,9 @@ export default function UserDiscussionForum() {
     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  useEffect(() => {scrollToBottom()}, []);
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
   const otherUserMessage = (
     <Grid item xs={12} md={12} lg={12} style={{ marginRight: '75px' }}>
       <div className="px-0 d-flex flex-column">
