@@ -774,6 +774,13 @@ exports.createPost = async (req, res, next) => {
       return next(new ErrorResponse('User not active', 400));
     }
 
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
     const existinParticipation = await UserParticipation.findOne({ userId, leagueId });
 
     if (!existinParticipation) {
