@@ -69,4 +69,10 @@ export default {
       url: `${BASE}/getLeagueStats/${leagueId}`,
     };
   },
+
+  getPosts(leagueId) {
+    return {
+      url: `${BASE}/getPostsByLeagueId/${leagueId}`,
+    };
+  },
 };
