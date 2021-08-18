@@ -8,11 +8,11 @@ export default function UserPostDetails({ post, createdDate, username, isCurrent
       <div className="px-0 d-flex flex-column">
         <Card>
           <CardContent>
-            <Typography variant="body1">{username}</Typography>
-            <div className="d-flex w-100 justify-content-between">
-              <Typography variant="caption" component="p">
+            <Typography variant="body1 " component="p">
                 {post}
               </Typography>
+            <div className="d-flex w-100 justify-content-between">
+              <Typography variant="caption">- {username}</Typography>
               <Typography variant="caption" component="p">
                 {moment(createdDate).format('LL')}
               </Typography>

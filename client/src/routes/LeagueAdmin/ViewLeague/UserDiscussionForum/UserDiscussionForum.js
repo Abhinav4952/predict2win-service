@@ -13,9 +13,13 @@ export default function UserDiscussionForum({ leagueId }) {
   const [progress, setProgress] = useState(true);
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState();
+  const [disableSendIcon, setDisableSendIcon] = useState(false);
+  const [post, setNewPost] = useState(false);
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if(messagesEndRef?.current){
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const getLoggedInUserRoute = () => {
@@ -25,6 +29,41 @@ export default function UserDiscussionForum({ leagueId }) {
     }
     const user = jwt(token);
     return user;
+  };
+
+  const addPost = async () => {
+    try {
+      if (disableSendIcon) {
+        return;
+      }
+      setDisableSendIcon(true);
+      const loggedInUserDetails = getLoggedInUserRoute();
+      const postRequest = LeagueAdminApi.createPost({
+        leagueId,
+        userId: loggedInUserDetails?.id,
+        post,
+      });
+      const postResponse = await Api.performRequest(postRequest);
+      console.log(postResponse);
+      const responseDetails = postResponse?.data;
+      if(!responseDetails){
+        return;
+      }
+      const updatedPostDetail = {
+        postId: responseDetails._id,
+        post: responseDetails.post,
+        createdDate: responseDetails.created,
+        username: loggedInUserDetails?.username || "",
+        userId: loggedInUserDetails?.id,
+        isCurrentUser: true
+      };
+      setPosts([...posts, updatedPostDetail])
+      setNewPost('');
+      setDisableSendIcon(false);
+    } catch (err) {
+      setDisableSendIcon(false);
+      console.log(err);
+    }
   };
 
   const getPostDetails = async () => {
@@ -47,6 +86,7 @@ export default function UserDiscussionForum({ leagueId }) {
       });
       setPosts(updatedPostDetails);
       setProgress(false);
+      setTimeout(() => scrollToBottom())
       setError();
     } catch (err) {
       console.log(err);
@@ -75,20 +115,29 @@ export default function UserDiscussionForum({ leagueId }) {
       <div
         className="p-2 scrollbar scrollbar-primary"
         style={{ maxHeight: '350px', overflowY: 'auto' }}
-        ref={messagesEndRef}
       >
         {progress && !posts.length ? (
           getHandlerContainer()
         ) : (
-          <Grid container spacing={2} direction="column">
+        <Grid container spacing={2} direction="column" ref={messagesEndRef}> 
             {postsContainer}
           </Grid>
         )}
       </div>
       {progress ? null : (
         <div className="my-1 p-2 d-flex justify-content-between w-100">
-          <TextField id="input-with-icon-grid" label="Enter a message" className="w-100" />
-          <SendIcon color="primary" style={{ margin: '15px 0' }} />
+          <TextField
+            id="input-with-icon-grid"
+            label="Enter a message"
+            className="w-100"
+            value={post || ''}
+            onChange={e => setNewPost(e.target.value)}
+            disabled={disableSendIcon}
+          />
+          <div onClick={addPost} style={{opacity: disableSendIcon ? 0.5 : 1, cursor: "pointer"}}>
+            <SendIcon color="primary" style={{ margin: '15px 0' }} />  
+          </div>
+          {disableSendIcon}
         </div>
       )}
     </div>
