@@ -5,6 +5,9 @@ const connectDB = require('./config/db');
 const cors = require('cors');
 const postRoutes = require('./routes/postRoutes');
 const errorHandler = require('./middleware/error');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDoc=require('./utils/swagger.json');
+
 const fs = require('fs');
 
 connectDB();
@@ -44,6 +47,12 @@ app.use(
 //https://git.heroku.com/enigmatic-temple-25922.git
 //https://enigmatic-temple-25922.herokuapp.com/
 app.use('/api/v1/posts', postRoutes);
+app.use(
+  '/api/v1/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDoc),
+);
+
 app.use('/api/v1/auth', require('./routes/authRoute'));
 app.use('/api/v1/admin', require('./routes/adminRoute'));
 app.use('/api/v1/leagueAdmin', require('./routes/leagueAdminRoute'));
