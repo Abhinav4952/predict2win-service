@@ -2,13 +2,13 @@ import jwt from 'jwt-decode';
 import { Grid, TextField } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import SendIcon from '@material-ui/icons/Send';
-import LeagueAdminApi from '../../../../api/LeagueAdminApi';
 import Api from '../../../../api/Api';
 import ErrorContainer from '../../../../components/lib/ErrorContainer/ErrorContainer';
 import ProgressContainer from '../../../../components/lib/ProgressContainer/ProgressContainer';
 import UserPostDetails from '../../../../components/lib/UserPostDetails/UserPostDetails';
+import UserApi from '../../../../api/UserApi';
 
-export default function UserDiscussionForum({ leagueId }) {
+export default function NormalUserDisussionForum({ leagueId }) {
   const messagesEndRef = useRef(null);
   const [progress, setProgress] = useState(true);
   const [posts, setPosts] = useState([]);
@@ -38,7 +38,7 @@ export default function UserDiscussionForum({ leagueId }) {
       }
       setDisableSendIcon(true);
       const loggedInUserDetails = getLoggedInUserRoute();
-      const postRequest = LeagueAdminApi.createPost({
+      const postRequest = UserApi.createPost({
         leagueId,
         userId: loggedInUserDetails?.id,
         post,
@@ -72,7 +72,7 @@ export default function UserDiscussionForum({ leagueId }) {
       if(!leagueId){
         return;
       }
-      const postRequest = LeagueAdminApi.getPosts(leagueId);
+      const postRequest = UserApi.getPosts(leagueId);
       const postsDetails = await Api.performRequest(postRequest);
       const loggedInUserDetails = getLoggedInUserRoute();
       console.log(postsDetails);

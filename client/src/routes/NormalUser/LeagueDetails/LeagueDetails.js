@@ -13,6 +13,7 @@ import LeagueAnswers from './LeagueAnswers/LeagueAnswers';
 import LeagueUserDashboard from '../../LeagueAdmin/ViewLeague/LeagueUserDashboard/LeagueUserDashboard';
 import LeagueStatus from '../../../helpers/enums/LeagueStatus';
 import UserParticipationStatus from '../../../helpers/enums/UserParticipationStatus';
+import NormalUserDisussionForum from './NormalUserDisussionForum/NormalUserDisussionForum';
 
 export default function LeagueDetails() {
   const params = useParams();
@@ -125,6 +126,11 @@ export default function LeagueDetails() {
                 <Grid item xs={12} md={12} lg={12}>
                   <Paper elevation={'3'} className="p-3">
                     <LeagueUserDashboard />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12}>
+                  <Paper elevation={'3'} className="p-3">
+                    <NormalUserDisussionForum leagueId={leagueDetails?._id} />
                   </Paper>
                 </Grid>
               </Grid>
