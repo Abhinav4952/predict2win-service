@@ -255,7 +255,6 @@ exports.stopLeague = async (req, res, next) => {
 
     const schema = Joi.object({
       leagueId: Joi.string().required(),
-      slots: Joi.number().required(),
     });
 
     // schema options
@@ -292,9 +291,9 @@ exports.stopLeague = async (req, res, next) => {
       expiryDate: currentDate,
       updated: currentDate,
     });
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      data: 'Answers Updated Successfully',
+      data: 'League Stopped',
     });
   } catch (err) {
     next(err);
