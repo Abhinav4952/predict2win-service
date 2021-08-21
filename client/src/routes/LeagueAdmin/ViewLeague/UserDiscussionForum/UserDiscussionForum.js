@@ -7,6 +7,7 @@ import Api from '../../../../api/Api';
 import ErrorContainer from '../../../../components/lib/ErrorContainer/ErrorContainer';
 import ProgressContainer from '../../../../components/lib/ProgressContainer/ProgressContainer';
 import UserPostDetails from '../../../../components/lib/UserPostDetails/UserPostDetails';
+import io from 'socket.io-client';
 
 export default function UserDiscussionForum({ leagueId }) {
   const messagesEndRef = useRef(null);
@@ -66,6 +67,24 @@ export default function UserDiscussionForum({ leagueId }) {
     }
   };
 
+  const getModelledPosts = (intialPost) => {
+      if(!intialPost?.length){
+        return [];
+      }
+      const loggedInUserDetails = getLoggedInUserRoute();
+      return intialPost.map(ele => {
+      const { post, _id, created, userDetails } = ele;
+      return {
+        postId: _id,
+        post: post,
+        createdDate: created,
+        username: userDetails.username,
+        userId: userDetails._id,
+        isCurrentUser: loggedInUserDetails?.id === userDetails._id,
+      };
+    });
+  }
+
   const getPostDetails = async () => {
     try {
       setProgress(true);
@@ -74,19 +93,7 @@ export default function UserDiscussionForum({ leagueId }) {
       }
       const postRequest = LeagueAdminApi.getPosts(leagueId);
       const postsDetails = await Api.performRequest(postRequest);
-      const loggedInUserDetails = getLoggedInUserRoute();
-      console.log(postsDetails);
-      const updatedPostDetails = postsDetails?.data?.map(ele => {
-        const { post, _id, created, userDetails } = ele;
-        return {
-          postId: _id,
-          post: post,
-          createdDate: created,
-          username: userDetails.username,
-          userId: userDetails._id,
-          isCurrentUser: loggedInUserDetails?.id === userDetails._id,
-        };
-      });
+      const updatedPostDetails = getModelledPosts(postsDetails?.data);
       setPosts(updatedPostDetails);
       setProgress(false);
       setTimeout(() => scrollToBottom())
@@ -101,6 +108,9 @@ export default function UserDiscussionForum({ leagueId }) {
     if (error) {
       return <ErrorContainer text={error} />;
     }
+    if(!progress && posts.length){
+      return <ErrorContainer text="no posts added in league" />;
+    }
     return <ProgressContainer />;
   };
 
@@ -110,6 +120,21 @@ export default function UserDiscussionForum({ leagueId }) {
     scrollToBottom();
     setProgress(true);
     getPostDetails();
+    const socket = io('http://localhost:5000', { transports : ['websocket'] });
+    console.log(socket);
+
+    const interval = setInterval(() => {
+      if (socket) socket.emit('push message', leagueId);
+    },5000); 
+    socket.on('posts list', msg => {
+      const postsfromSocket = getModelledPosts(msg)
+      setPosts(postsfromSocket);
+      return null;
+    });
+    return () => {
+      if(socket) socket.disconnect();
+      if(interval) clearInterval(interval)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
