@@ -120,7 +120,7 @@ export default function UserDiscussionForum({ leagueId }) {
     scrollToBottom();
     setProgress(true);
     getPostDetails();
-    const socket = io('http://localhost:5000', { transports : ['websocket'] });
+    const socket = io('https://enigmatic-temple-25922.herokuapp.com', { transports : ['websocket'] });
     console.log(socket);
 
     const interval = setInterval(() => {
