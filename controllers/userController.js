@@ -14,6 +14,7 @@ const mongoose = require('mongoose');
 const LeagueQuestionType = require('../helpers/enums/LeagueQuestionType');
 var moment = require('moment');
 const LeagueQuestion = require('../models/LeagueQuestion');
+const UserPosts = require('../models/UserPosts');
 
 exports.getLeaguesforUser = async (req, res, next) => {
   try {
@@ -733,6 +734,154 @@ exports.getLeaderBoardByLeagueId = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: sortedLeagerBoard,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.createPost = async (req, res, next) => {
+  try {
+    const leagueId = req.params.leagueId;
+
+    const { userId, post } = req.body;
+
+    const schema = Joi.object({
+      userId: Joi.string().required(),
+      post: Joi.string().required(),
+    });
+
+    // schema options
+    const options = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.body, options);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return next(new ErrorResponse('User not found', 404));
+    }
+
+    if (user?.userStatus !== 'CREATED') {
+      return next(new ErrorResponse('User not active', 400));
+    }
+
+
+    const league = await League.findById(leagueId);
+
+    if (!league) {
+      return next(new ErrorResponse('League Not found', 404, 'Not found'));
+    }
+
+    const existinParticipation = await UserParticipation.findOne({ userId, leagueId });
+
+    if (!existinParticipation) {
+      return next(new ErrorResponse('Not Registered for league', 400, 'Bad Request'));
+    }
+
+    const userPostDetails = await UserPosts.create({
+      leagueId,
+      userId,
+      post,
+      created: new Date().toISOString(),
+      updated: new Date().toISOString(),
+    });
+    console.log(userPostDetails);
+
+    res.status(201).json({
+      success: true,
+      data: userPostDetails,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getPosts = async (req, res, next) => {
+  try {
+    const leagueId = req.params.leagueId;
+
+    const schema = Joi.object({
+      leagueId: Joi.string().required(),
+    });
+
+    const userDetails = req.user;
+
+    // schema options
+    const options = {
+      abortEarly: false, // include all errors
+      allowUnknown: true, // ignore unknown props
+      stripUnknown: true, // remove unknown props
+    };
+
+    const { error } = schema.validate(req.params, options);
+
+    if (error?.details) {
+      return next(new ErrorResponse(error?.details[0]?.message || 'Bad Request', 400, 'ValidationError'));
+    }
+
+    const user = await User.findOne({ _id: userDetails?._id });
+
+    if (!user) {
+      return next(new ErrorResponse('User not found', 404));
+    }
+
+    if (user?.userStatus !== 'CREATED') {
+      return next(new ErrorResponse('User not active', 400));
+    }
+
+    const existinParticipation = await UserParticipation.findOne({ userId: userDetails?._id, leagueId });
+
+    if (!existinParticipation) {
+      return next(new ErrorResponse('Not Registered for league', 400, 'Bad Request'));
+    }
+
+    const userPostDetails = await UserPosts.aggregate([
+      {
+        $match: {
+          leagueId: mongoose.Types.ObjectId(leagueId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $unwind: {
+          path: '$userDetails',
+        },
+      },
+      {
+        $project: {
+          'userDetails.userType': 0,
+          'userDetails.userStatus': 0,
+          'userDetails.password': 0,
+          'userDetails.created': 0,
+          'userDetails.updated': 0,
+          'userDetails.__v': 0,
+          'userDetails.resetPasswordToken': 0,
+          'userDetails.resetPasswordExpire': 0,
+          userId: 0,
+          __v: 0,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: userPostDetails,
     });
   } catch (err) {
     next(err);

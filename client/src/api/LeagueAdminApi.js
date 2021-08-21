@@ -69,4 +69,18 @@ export default {
       url: `${BASE}/getLeagueStats/${leagueId}`,
     };
   },
+
+  getPosts(leagueId) {
+    return {
+      url: `${BASE}/getPostsByLeagueId/${leagueId}`,
+    };
+  },
+
+  createPost({leagueId, userId, post}){
+    return {
+      url: `${BASE}/createPost/${leagueId}`,
+      options: { method: 'POST' },
+      payload: { userId, post },
+    };
+  }
 };

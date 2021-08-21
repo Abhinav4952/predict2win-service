@@ -422,6 +422,215 @@
           }
         ]
       }
+    },
+    "/api/v1/leagueAdmin/stopLeague": {
+      "post": {
+        "tags": ["League Admin"],
+        "summary": "Start a league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Start a league",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Stop League Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "League Stopped"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized to stop league of different users league"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/getParticipationsByLeagueId/{leagueId}": {
+      "get": {
+        "tags": ["League Admin"],
+        "summary": "Get Participants for a league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leagueId",
+            "description": "LeagueId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Participants list"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized to get participants of different users league"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/getLeaderBoardByLeagueId/{leagueId}": {
+      "get": {
+        "tags": ["League Admin"],
+        "summary": "Get LeaderBoard for a league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leagueId",
+            "description": "LeagueId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "LeaderBoard list"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized to get leaderboard of different users league"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/getLeagueStats/{leagueId}": {
+      "get": {
+        "tags": ["League Admin"],
+        "summary": "Get LeagueStats for a league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leagueId",
+            "description": "LeagueId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "League Stats"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized to get leaderboard of different users league"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/createPost/{leagueId}": {
+      "post": {
+        "tags": ["League Admin"],
+        "summary": "Start a league",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leagueId",
+            "description": "LeagueId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Post",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Create userPost Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "League Started Successfully",
+            "schema": {
+              "$ref": "#/definitions/UserPost"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/leagueAdmin/getPostsByLeagueId/{leagueId}": {
+      "get": {
+        "tags": ["League Admin"],
+        "summary": "Get league posts",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leagueId",
+            "description": "LeagueId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "League posts"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "UnAuthorized to get posts of different users league"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -603,6 +812,30 @@
         "expiryDate": { "type": "string" }
       }
     },
+    "UserPost": {
+      "type": "object",
+      "required": ["leagueId", "userId"],
+      "properties": {
+        "leagueId": {
+          "type": "string",
+          "description": "League Id"
+        },
+        "userId": {
+          "type": "string",
+          "description": "user Id"
+        },
+        "post": {
+          "type": "string",
+          "description": "post"
+        },
+        "created": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        }
+      }
+    },
     "Login Request": {
       "type": "object",
       "required": ["email", "password"],
@@ -752,6 +985,27 @@
         },
         "slots": {
           "type": "integer"
+        }
+      }
+    },
+    "Stop League Request": {
+      "type": "object",
+      "required": ["leagueId"],
+      "properties": {
+        "leagueId": {
+          "type": "string"
+        }
+      }
+    },
+    "Create userPost Request": {
+      "type": "object",
+      "required": ["post", "userId"],
+      "properties": {
+        "post": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
         }
       }
     }
