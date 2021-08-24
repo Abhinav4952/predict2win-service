@@ -14,7 +14,22 @@ Web Service API will be protected in both authentication and authorization using
 
 Schema validation using JOI 
 
-Logging will be done using PINO 
+---
+# Features:-
+
+## SSO:-
+Application has Single Sign on with google account using React google login library
+
+## Mailing:-
+Application has functionality to send EMAIL's with the help of node mailer library and Send Grid mail service
+
+## API Documentation:-
+API Documentation is created with the help of swagger and accessible at <URL>/api/v1/api-docs
+
+## Two way communication
+Application will use a Socket communication for two way communication using socket.io
+
+---
 
 
 For initial data it can be seeded using code present in separate branch [feature/seed-data](https://github.com/Abhinav4952/predict2win-service/tree/feature/seed-data)
