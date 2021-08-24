@@ -17,16 +17,16 @@ Schema validation using JOI
 ---
 # Features:-
 
-## SSO:-
+### SSO:-
 Application has Single Sign on with google account using React google login library
 
-## Mailing:-
+### Mailing:-
 Application has functionality to send EMAIL's with the help of node mailer library and Send Grid mail service
 
-## API Documentation:-
+### API Documentation:-
 API Documentation is created with the help of swagger and accessible at <URL>/api/v1/api-docs
 
-## Two way communication
+### Two way communication
 Application will use a Socket communication for two way communication using socket.io
 
 ---
