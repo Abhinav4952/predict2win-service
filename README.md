@@ -12,22 +12,57 @@ Predict2Win provides  Web Application to allow users to predict to questions whi
 
 Web Service API will be protected in both authentication and authorization using JWT token and Email service will also be integrated for sending Emails with the help of Send Grid SMTP Service. 
 
-Schema validation using JOI 
-
 ---
 # Features:-
 
-### SSO:-
-Application has Single Sign on with google account using React google login library
+**UI Development:-**
 
-### Mailing:-
-Application has functionality to send EMAIL's with the help of node mailer library and Send Grid mail service
+Created Frontend UI using React JS, React Hooks, React Router, Used Material UI
 
-### API Documentation:-
+**API Development:-**
+
+Using Express JS MVC approach
+
+**API Documentation:-**
+
 API Documentation is created with the help of swagger and accessible at <URL>/api/v1/api-docs
 
-### Two way communication
+**Schema Validation:-**
+
+Schema validation is implemented using JOI 
+
+**Mailing:-**
+
+Implemented using node mailer library and Send Grid mail service
+
+**Two way communication:-**
+
 Application will use a Socket communication for two way communication using socket.io
+ 
+**ORM Implementation:-**
+
+Connected to MongoDB with the help of Mongoose
+
+**Database:-**
+
+MongoDB
+ 
+**Authentication:-**
+
+Using JWT and Authorization using Middleware's
+
+**SSO:-**
+
+Single Sign on with google account using React google login library
+ 
+**Hosting:-**
+
+Hosted on Heroku Cloud with CI/CD Deployment
+ 
+**Data Seeding:-**
+
+Scripts to seed data
+ 
 
 ---
 
