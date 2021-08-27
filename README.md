@@ -15,41 +15,55 @@ Web Service API will be protected in both authentication and authorization using
 ---
 # Features:-
 
-UI Development:-
-Created FrontEnd UI using React JS,React Hooks,React Router,Used Material UI
+**UI Development:-**
 
-API Development:-
+Created Frontend UI using React JS, React Hooks, React Router, Used Material UI
+
+**API Development:-**
+
 Using Express JS MVC approach
 
-API Documentation:-
+**API Documentation:-**
+
 API Documentation is created with the help of swagger and accessible at <URL>/api/v1/api-docs
- 
-ORM Implmentation:-
-Connected to MongoDB with the help of Mongoose
- 
-Authentication:-
-Using JWT and Authorisation using Middlewares
- 
-Schema Validation:-
+
+**Schema Validation:-**
+
 Schema validation is implemented using JOI 
 
-SSO:-
-Single Sign on with google account using React google login library
+**Mailing:-**
 
-Mailing:-
 Implemented using node mailer library and Send Grid mail service
 
-Two way communication
+**Two way communication:-**
+
 Application will use a Socket communication for two way communication using socket.io
  
-Hosting:-
+**ORM Implementation:-**
+
+Connected to MongoDB with the help of Mongoose
+
+**Database:-**
+
+MongoDB
+ 
+**Authentication:-**
+
+Using JWT and Authorization using Middleware's
+
+**SSO:-**
+
+Single Sign on with google account using React google login library
+ 
+**Hosting:-**
+
 Hosted on Heroku Cloud with CI/CD Deployment
  
-Data Seeding:-
+**Data Seeding:-**
+
 Scripts to seed data
  
-Database:-
-MongoDB
+
 ---
 
 
